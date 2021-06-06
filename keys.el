@@ -1,4 +1,3 @@
-
 (general-define-key "ESC" #'evil-force-normal-state)
 (general-define-key :keymaps 'evil-insert-state-map (general-chord "jk") #'evil-force-normal-state)
 (general-define-key :keymaps 'evil-insert-state-map (general-chord "kj") #'evil-force-normal-state)
@@ -37,9 +36,9 @@
   "of" #'make-frame
   )
 (my-leader-def
-  "pp" #'projectile-persp-switch-project
+  "pp" #'projectile-switch-project
   "pc" #'projectile-command-map
-  "pc" #'projectile-remove-known-project
+  "pd" #'projectile-remove-known-project
   "pa" #'projectile-add-known-project
   )
 (my-leader-def
@@ -52,6 +51,11 @@
 (my-leader-def
   "gg" #'magit
   "gi" #'magit-init
+  )
+(my-leader-def
+  "sd" #'consult-ripgrep
+  "sl" #'consult-line
+  "so" #'consult-outline
   )
 (my-leader-def
   "ll" #'consult-locate
@@ -67,8 +71,9 @@
   "wk" #'evil-window-up
   )
 
-(general-define-key "<XF86TouchpadOn>" #'embark-act) ;; F23
-(general-define-key "<XF86TouchpadOn>" #'embark-become) ;; F22
+(general-define-key "<XF86TouchpadOn>" #'embark-act) ;; F3
+(general-define-key "<XF86TouchpadOff>" #'embark-become) ;; F22
+
 (general-define-key :keymaps 'embark-symbol-map "r" #'lsp-find-references)
 (general-define-key "C-x C-e" #'eval-defun)
 (general-define-key :keymaps 'emacs-lisp-mode-map "C-c C-c" #'eval-buffer)

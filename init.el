@@ -14,6 +14,7 @@
 
 (straight-use-package 'evil)
 (straight-use-package 'evil-collection)
+(straight-use-package 'evil-commentary)
 (straight-use-package 'evil-args)
 
 (straight-use-package 'general)
@@ -23,6 +24,11 @@
 (straight-use-package 'no-littering)
 
 (straight-use-package 'which-key)
+
+(straight-use-package 'web-mode)
+(straight-use-package 'skewer-mode)
+
+(straight-use-package 'doom-modeline)
 
 (straight-use-package 'projectile)
 (straight-use-package 'flycheck)
@@ -41,7 +47,7 @@
 (straight-use-package 'embark)
 
 (straight-use-package 'perspective)
-(straight-use-package 'persp-projectile)
+;;(straight-use-package 'persp-projectile)
 
 (straight-use-package 'page-break-lines)
 (straight-use-package 'all-the-icons)
@@ -63,6 +69,7 @@
 
 (when my/use-haskell
   (straight-use-package 'haskell-mode)
+  (straight-use-package 'lsp-haskell)
   (add-hook 'haskell-mode-hook #'lsp))
 
 (when my/use-python
@@ -163,8 +170,17 @@
 (scroll-bar-mode -1)
 (evil-mode +1)
 (persp-mode +1)
+(evil-commentary-mode 1)
 (global-display-line-numbers-mode 1)
 
+(add-hook 'after-init-hook #'doom-modeline-mode)
+
 (setq org-directory (expand-file-name "~/org"))
+
+(defun my/lazy--find-file ()
+  (interactive)
+  (call-interactively #'find-file))
+
+(setq projectile-switch-project-action #'my/lazy--find-file)
 
 (fset 'yes-or-no-p 'y-or-n-p)
