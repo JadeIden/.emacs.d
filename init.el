@@ -11,9 +11,9 @@
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
 
-(load (expand-file-name "~/.emacs.d/options.el"))
 
 (straight-use-package 'evil)
+(straight-use-package 'evil-collection)
 (straight-use-package 'evil-args)
 
 (straight-use-package 'general)
@@ -32,8 +32,10 @@
 (straight-use-package 'company-lsp)
 (straight-use-package 'consult-lsp)
 (straight-use-package 'undo-fu)
+(straight-use-package 'help-fns-plus)
 
 (straight-use-package 'selectrum)
+(straight-use-package 'marginalia)
 (straight-use-package 'orderless)
 (straight-use-package 'consult)
 (straight-use-package 'embark)
@@ -42,12 +44,14 @@
 (straight-use-package 'persp-projectile)
 
 (straight-use-package 'page-break-lines)
-(straight-use-package 'dashboard)
 (straight-use-package 'all-the-icons)
 
 (straight-use-package 'magit)
 
-(require 'no-littering)
+(require 'evil)
+(load (expand-file-name "~/.emacs.d/options.el"))
+(load (expand-file-name "~/.emacs.d/functions.el"))
+(load (expand-file-name "~/.emacs.d/keys.el"))
 
 (require 'company)
 (require 'company-lsp)
@@ -79,22 +83,8 @@
 
 ;; bind evil-args text objects
 (setq evil-undo-system 'undo-fu)
-(require 'evil)
-
-(general-define-key "ESC" #'evil-force-normal-state)
-(general-define-key :keymaps 'evil-insert-state-map (general-chord "jk") #'evil-force-normal-state)
-(general-define-key :keymaps 'evil-insert-state-map (general-chord "kj") #'evil-force-normal-state)
-(general-define-key :states 'normal
-		    "ESC" #'keyboard-quit)
-
-(define-key evil-inner-text-objects-map "a" 'evil-inner-arg)
-(define-key evil-outer-text-objects-map "a" 'evil-outer-arg)
-
-;; bind evil-forward/backward-args
-(define-key evil-normal-state-map "L" 'evil-forward-arg)
-(define-key evil-normal-state-map "H" 'evil-backward-arg)
-(define-key evil-motion-state-map "L" 'evil-forward-arg)
-(define-key evil-motion-state-map "H" 'evil-backward-arg)
+(setq evil-want-keybinding nil)
+(evil-collection-init)
 
 (setq completion-styles '(orderless))
 
@@ -106,52 +96,64 @@
 (setq orderless-skip-highlighting (lambda () selectrum-is-active))
 (setq selectrum-highlight-candidates-function #'orderless-highlight-matches)
 
-(defun my/open-private-configuration ()
+(setq org-agenda-files '("~/org/todo.org" "~/org/todo-archive.org"))
+(setq org-agenda-start-on-weekday 0)
+(setq org-refile-targets '((nil :maxlevel . 9) (org-agenda-files :maxlevel . 9)))
+(setq org-outline-path-complete-in-steps nil)         ; Refile in a single go
+(setq org-refile-use-outline-path t)                  ; Show full paths for refiling
+(setq org-capture-templates '(
+			      ("t" "TODO" entry (file+headline "~/org/todo.org" "Tasks")
+			       "* TODO %?\n  %i\n  %a")
+			      ("a" "Appointment" entry (file+headline "~/org/todo.org" "Appointments")
+			       "* %? \n%^T")))
+
+;; Credit to https://protesilaos.com/dotemacs/#h:d67ed8d0-d711-48b0-9f40-f88ae2e5c984
+(defvar embark-action-indicator)
+(defvar embark-become-indicator) (declare-function which-key--show-keymap "which-key")
+(declare-function which-key--hide-popup-ignore-command "which-key")
+
+(defvar prot-embark--which-key-state nil
+  "Store state of Embark's `which-key' hints.")
+
+;;;###autoload
+(defun prot-embark-toggle-which-key ()
+  "Toggle `which-key' hints for Embark actions."
   (interactive)
-  (let ((default-directory "~/.emacs.d/"))
-    (call-interactively #'find-file)))
+  (if prot-embark--which-key-state
+      (progn
+        (setq embark-action-indicator
+                   (let ((act (propertize "Act" 'face 'highlight)))
+                     (cons act (concat act " on '%s'"))))
+        (setq prot-embark--which-key-state nil))
+    (setq embark-action-indicator
+          (lambda (map _target)
+            (which-key--show-keymap "Embark" map nil nil 'no-paging)
+            #'which-key--hide-popup-ignore-command)
+          embark-become-indicator embark-action-indicator)
+    (setq prot-embark--which-key-state t)))
 
-(general-create-definer my-leader-def
-                        :states 'normal
-                        :keymaps 'override
-                        :prefix "SPC")
+(prot-embark-toggle-which-key)
 
-(my-leader-def "<" #'consult-buffer)
-(my-leader-def ":" #'execute-extended-command)
-(my-leader-def ";" #'eval-expression)
-(my-leader-def "SPC" #'find-file)
-(my-leader-def "." #'find-file)
-(my-leader-def "fP" #'my/open-private-configuration)
-(my-leader-def
-  "TAB TAB" #'persp-switch
-  "TAB d" #'persp-kill
-  )
-(my-leader-def
-  "of" #'make-frame
-  )
-(my-leader-def
-  "pp" #'projectile-persp-switch-project
-  "pc" #'projectile-command-map
-  "pa" #'projectile-add-known-project
-  )
-(my-leader-def
-  "bd" #'kill-this-buffer
-  )
-(my-leader-def
-  "gg" #'magit
-  "gi" #'magit-init
-  )
-(my-leader-def
-  "wv" #'split-window-right
-  "ws" #'split-window-below
-  "wq" #'delete-window
-  "wh" #'evil-window-left
-  "wl" #'evil-window-right
-  "wj" #'evil-window-down
-  "wk" #'evil-window-up
-  )
+;; No more squiggles! Thanks to https://stackoverflow.com/a/18330742
+(defvar --backup-directory (concat user-emacs-directory "backups"))
+(if (not (file-exists-p --backup-directory))
+        (make-directory --backup-directory t))
+(setq backup-directory-alist `(("." . ,--backup-directory)))
+(setq make-backup-files t               ; backup of a file the first time it is saved.
+      backup-by-copying t               ; don't clobber symlinks
+      version-control t                 ; version numbers for backup files
+      delete-old-versions t             ; delete excess backup files silently
+      delete-by-moving-to-trash t
+      kept-old-versions 6               ; oldest versions to keep when a new numbered backup is made (default: 2)
+      kept-new-versions 9               ; newest versions to keep when a new numbered backup is made (default: 2)
+      auto-save-default t               ; auto-save every buffer that visits a file
+      auto-save-timeout 20              ; number of seconds idle time before auto-save (default: 30)
+      auto-save-interval 200            ; number of keystrokes between auto-saves (default: 300)
+      )
+
 
 (selectrum-mode +1)
+(marginalia-mode +1)
 (projectile-mode +1)
 (key-chord-mode 1)
 (which-key-mode 1)
@@ -164,17 +166,5 @@
 (global-display-line-numbers-mode 1)
 
 (setq org-directory (expand-file-name "~/org"))
-
-(setq dashboard-items '((recents  . 5)
-                        (projects . 5)
-                        (agenda . 5)
-                        (registers . 5)))
-(setq dashboard-set-init-info t)
-(setq dashboard-set-footer nil)
-(setq dashboard-week-agenda t)
-(dashboard-setup-startup-hook)
-(setq initial-buffer-choice (lambda () (get-buffer "*dashboard*")))
-
-(push 'evil-overriding-maps dashboard-mode-map)
 
 (fset 'yes-or-no-p 'y-or-n-p)
