@@ -2,3 +2,14 @@
   (interactive)
   (let ((default-directory "~/.emacs.d/"))
     (call-interactively #'find-file)))
+
+(defun my/open-org-folder ()
+  (interactive)
+  (let ((default-directory org-directory))
+    (call-interactively #'find-file)))
+
+(defun my/eshell-other-window ()
+  (interactive)
+  (split-window-right)
+  (windmove-right)
+  (eshell))

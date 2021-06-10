@@ -14,6 +14,7 @@
 
 (straight-use-package 'evil)
 (straight-use-package 'evil-collection)
+(straight-use-package 'evil-surround)
 (straight-use-package 'evil-commentary)
 (straight-use-package 'evil-args)
 
@@ -47,12 +48,14 @@
 (straight-use-package 'embark)
 
 (straight-use-package 'perspective)
-;;(straight-use-package 'persp-projectile)
+(straight-use-package 'hercules)
 
 (straight-use-package 'page-break-lines)
 (straight-use-package 'all-the-icons)
 
 (straight-use-package 'magit)
+
+(straight-use-package 'org-wild-notifier)
 
 (require 'evil)
 (load (expand-file-name "~/.emacs.d/options.el"))
@@ -65,7 +68,7 @@
 (add-hook 'after-init-hook 'global-company-mode)
 
 (straight-use-package 'doom-themes)
-(load-theme 'doom-one t)
+(load-theme 'doom-tomorrow-night t)
 
 (when my/use-haskell
   (straight-use-package 'haskell-mode)
@@ -91,6 +94,9 @@
 ;; bind evil-args text objects
 (setq evil-undo-system 'undo-fu)
 (setq evil-want-keybinding nil)
+(setq evil-collection-calendar-want-org-bindings t)
+(setq evil-collection-outline-bind-tab-p t)
+(setq evil-collection-setup-minibuffer t)
 (evil-collection-init)
 
 (setq completion-styles '(orderless))
@@ -171,16 +177,40 @@
 (evil-mode +1)
 (persp-mode +1)
 (evil-commentary-mode 1)
+(global-evil-surround-mode 1)
+(global-flycheck-mode 1)
 (global-display-line-numbers-mode 1)
+(add-hook 'org-mode-hook #'org-indent-mode)
 
 (add-hook 'after-init-hook #'doom-modeline-mode)
 
-(setq org-directory (expand-file-name "~/org"))
+(setq org-directory (expand-file-name "~/org/"))
 
 (defun my/lazy--find-file ()
   (interactive)
   (call-interactively #'find-file))
 
 (setq projectile-switch-project-action #'my/lazy--find-file)
+(setq org-hide-emphasis-markers t)
+
+(setq-default show-trailing-whitespace t)
+(setq-default indent-tabs-mode nil)
+(setq-default tab-width 4)
 
 (fset 'yes-or-no-p 'y-or-n-p)
+
+(defun set-exec-path-from-shell-PATH ()
+  "Set up Emacs' `exec-path' and PATH environment variable to match
+that used by the user's shell.
+
+This is particularly useful under Mac OS X and macOS, where GUI
+apps are not started from a shell."
+  (interactive)
+  (let ((path-from-shell (replace-regexp-in-string
+			  "[ \t\n]*$" "" (shell-command-to-string
+					  "$SHELL --login -c 'echo $PATH'"
+						    ))))
+    (setenv "PATH" path-from-shell)
+    (setq exec-path (split-string path-from-shell path-separator))))
+
+(set-exec-path-from-shell-PATH)

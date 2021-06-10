@@ -31,6 +31,7 @@
   )
 (my-leader-def
   "oE" #'eshell
+  "oe" #'my/eshell-other-window
   "oa" #'org-agenda
   "oA" #'org-agenda-list
   "of" #'make-frame
@@ -60,6 +61,9 @@
 (my-leader-def
   "ll" #'consult-locate
   "ls" #'consult-lsp-symbols
+  )
+(my-leader-def
+  "nF" #'my/open-org-folder
   )
 (my-leader-def
   "wv" #'split-window-right
