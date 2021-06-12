@@ -47,6 +47,7 @@
   )
 (my-leader-def
   "ha" #'consult-apropos
+  "hf" #'describe-function
   "hk" #'describe-key
   )
 (my-leader-def
@@ -66,8 +67,8 @@
   "nF" #'my/open-org-folder
   )
 (my-leader-def
-  "wv" #'split-window-right
-  "ws" #'split-window-below
+  "wv" #'my/split-n-swap-right
+  "ws" #'my/split-n-swap-below
   "wq" #'delete-window
   "wh" #'evil-window-left
   "wl" #'evil-window-right

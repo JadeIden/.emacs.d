@@ -3,6 +3,16 @@
   (let ((default-directory "~/.emacs.d/"))
     (call-interactively #'find-file)))
 
+(defun my/split-n-swap-right ()
+  (interactive)
+  (split-window-right)
+  (windmove-right))
+
+(defun my/split-n-swap-below ()
+  (interactive)
+  (split-window-below)
+  (windmove-down))
+
 (defun my/open-org-folder ()
   (interactive)
   (let ((default-directory org-directory))
