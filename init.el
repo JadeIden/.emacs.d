@@ -54,6 +54,7 @@
 (straight-use-package 'all-the-icons)
 
 (straight-use-package 'magit)
+(straight-use-package 'popwin)
 
 (straight-use-package 'org-wild-notifier)
 
@@ -180,6 +181,7 @@
 (global-evil-surround-mode 1)
 (global-flycheck-mode 1)
 (global-display-line-numbers-mode 1)
+(popwin-mode 1)
 (add-hook 'org-mode-hook #'org-indent-mode)
 
 (add-hook 'after-init-hook #'doom-modeline-mode)
@@ -196,6 +198,11 @@
 (setq-default show-trailing-whitespace t)
 (setq-default indent-tabs-mode nil)
 (setq-default tab-width 4)
+
+(setq org-todo-keywords
+      '((sequence "TODO(t)" "|" "DONE(d)")
+        (sequence "REPORT(r)" "BUG(b)" "KNOWNCAUSE(k)" "|" "FIXED(f)")
+        (sequence "|" "CANCELED(c)")))
 
 (fset 'yes-or-no-p 'y-or-n-p)
 
