@@ -18,6 +18,11 @@
                         :keymaps 'override
                         :prefix "SPC")
 
+(general-create-definer my-local-leader-def
+  :states 'normal
+  :keymaps 'override
+  :prefix "SPC m")
+
 (my-leader-def "<" #'consult-buffer)
 (my-leader-def ":" #'execute-extended-command)
 (my-leader-def ";" #'eval-expression)
@@ -58,6 +63,7 @@
   "sd" #'consult-ripgrep
   "sl" #'consult-line
   "so" #'consult-outline
+  "sk" #'consult-yank-from-kill-ring
   )
 (my-leader-def
   "ll" #'consult-locate
@@ -76,9 +82,18 @@
   "wk" #'evil-window-up
   )
 
+(my-local-leader-def
+ :keymaps 'org-mode-map
+ "t" #'org-todo)
+
+(my-local-leader-def
+ :keymaps 'lsp-mode-map
+ "a" #'lsp-execute-code-action)
+
 (general-define-key "<XF86TouchpadOn>" #'embark-act) ;; F3
 (general-define-key "<XF86TouchpadOff>" #'embark-become) ;; F22
 
 (general-define-key :keymaps 'embark-symbol-map "r" #'lsp-find-references)
 (general-define-key "C-x C-e" #'eval-defun)
 (general-define-key :keymaps 'emacs-lisp-mode-map "C-c C-c" #'eval-buffer)
+(general-define-key :keymaps 'lsp-mode-map "C-c ." #'lsp-describe-thing-at-point)

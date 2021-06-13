@@ -11,6 +11,11 @@
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
 
+(setq evil-undo-system 'undo-fu)
+(setq evil-want-keybinding nil)
+(setq evil-collection-calendar-want-org-bindings t)
+(setq evil-collection-outline-bind-tab-p t)
+(setq evil-collection-setup-minibuffer t)
 
 (straight-use-package 'evil)
 (straight-use-package 'evil-collection)
@@ -93,11 +98,6 @@
 (require 'tree-sitter-langs)
 
 ;; bind evil-args text objects
-(setq evil-undo-system 'undo-fu)
-(setq evil-want-keybinding nil)
-(setq evil-collection-calendar-want-org-bindings t)
-(setq evil-collection-outline-bind-tab-p t)
-(setq evil-collection-setup-minibuffer t)
 (evil-collection-init)
 
 (setq completion-styles '(orderless))
@@ -186,6 +186,15 @@
 
 (add-hook 'after-init-hook #'doom-modeline-mode)
 
+;; Mark org-capture windows as popups
+(push '("*Org Select*" :height 15) popwin:special-display-config)
+(push '("^CAPTURE-.+\*.org$" :regexp t) popwin:special-display-config)
+
+(with-eval-after-load 'org
+    (defun org-switch-to-buffer-other-window (&rest args)
+      "Same as the original, but lacking the wrapping call to `org-no-popups'"
+      (apply 'switch-to-buffer-other-window args)))
+
 (setq org-directory (expand-file-name "~/org/"))
 
 (defun my/lazy--find-file ()
@@ -199,6 +208,9 @@
 (setq-default indent-tabs-mode nil)
 (setq-default tab-width 4)
 
+(add-hook 'eshell-mode-hook (lambda () (setq-local show-trailing-whitespace nil)))
+(add-hook 'comint-mode-hook (lambda () (setq-local show-trailing-whitespace nil)))
+
 (setq org-todo-keywords
       '((sequence "TODO(t)" "|" "DONE(d)")
         (sequence "REPORT(r)" "BUG(b)" "KNOWNCAUSE(k)" "|" "FIXED(f)")
@@ -208,7 +220,7 @@
 
 (defun set-exec-path-from-shell-PATH ()
   "Set up Emacs' `exec-path' and PATH environment variable to match
-that used by the user's shell.
+   that used by the user's shell.
 
 This is particularly useful under Mac OS X and macOS, where GUI
 apps are not started from a shell."
@@ -219,5 +231,6 @@ apps are not started from a shell."
 						    ))))
     (setenv "PATH" path-from-shell)
     (setq exec-path (split-string path-from-shell path-separator))))
+
 
 (set-exec-path-from-shell-PATH)
