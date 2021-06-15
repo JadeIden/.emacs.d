@@ -36,6 +36,8 @@
 
 (straight-use-package 'doom-modeline)
 
+(straight-use-package 'indium)
+
 (straight-use-package 'projectile)
 (straight-use-package 'flycheck)
 (straight-use-package 'tree-sitter)
@@ -234,6 +236,11 @@ apps are not started from a shell."
 
 
 (set-exec-path-from-shell-PATH)
+
+(when (eq system-type 'darwin)
+    (setq indium-chrome-executable "~/.emacs.d/mac-launch-chrome.sh"))
+(when (eq system-type 'gnu/linux)
+  (setq indium-chrome-executable "chromium-browser"))
 
 (setq custom-file "~/.emacs.d/custom.el")
 (load custom-file :noerror)
