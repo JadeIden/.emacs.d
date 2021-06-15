@@ -11,22 +11,11 @@
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
 
+(setq evil-undo-system 'undo-fu)
 (setq evil-want-keybinding nil)
 (setq evil-collection-calendar-want-org-bindings t)
 (setq evil-collection-outline-bind-tab-p t)
 (setq evil-collection-setup-minibuffer t)
-
-(setq org-agenda-diary-file "~/org/todo.org")
-(setq org-todo-keywords
-      '((sequence "TODO(t)" "|" "DONE(d)")
-        (sequence "REPORT(r)" "BUG(b)" "KNOWNCAUSE(k)" "|" "FIXED(f)")
-        (sequence "|" "CANCELED(c)")))
-(setq org-agenda-files '("~/org/todo.org" "~/org/todo-archive.org"))
-(setq org-agenda-start-on-weekday 0)
-(setq org-refile-targets '((nil :maxlevel . 9) (org-agenda-files :maxlevel . 9)))
-(setq org-outline-path-complete-in-steps nil)         ; Refile in a single go
-(setq org-refile-use-outline-path t)                  ; Show full paths for refiling
-
 
 (straight-use-package 'evil)
 (straight-use-package 'evil-collection)
@@ -46,6 +35,8 @@
 (straight-use-package 'skewer-mode)
 
 (straight-use-package 'doom-modeline)
+
+(straight-use-package 'indium)
 
 (straight-use-package 'projectile)
 (straight-use-package 'flycheck)
@@ -70,7 +61,7 @@
 (straight-use-package 'all-the-icons)
 
 (straight-use-package 'magit)
-(straight-use-package 'ediff)
+(straight-use-package 'popwin)
 
 (straight-use-package 'org-wild-notifier)
 
@@ -78,7 +69,6 @@
 (load (expand-file-name "~/.emacs.d/options.el"))
 (load (expand-file-name "~/.emacs.d/functions.el"))
 (load (expand-file-name "~/.emacs.d/keys.el"))
-(load (expand-file-name "~/.emacs.d/locals.el"))
 
 (require 'company)
 (require 'company-lsp)
@@ -106,11 +96,10 @@
 (when my/use-lsp
   (straight-use-package 'lsp-mode))
 
-;; (require 'tree-sitter)
-;; (require 'tree-sitter-langs)
+(require 'tree-sitter)
+(require 'tree-sitter-langs)
 
 ;; bind evil-args text objects
-(setq evil-undo-system 'undo-fu)
 (evil-collection-init)
 
 (setq completion-styles '(orderless))
@@ -123,6 +112,11 @@
 (setq orderless-skip-highlighting (lambda () selectrum-is-active))
 (setq selectrum-highlight-candidates-function #'orderless-highlight-matches)
 
+(setq org-agenda-files '("~/org/todo.org" "~/org/todo-archive.org"))
+(setq org-agenda-start-on-weekday 0)
+(setq org-refile-targets '((nil :maxlevel . 9) (org-agenda-files :maxlevel . 9)))
+(setq org-outline-path-complete-in-steps nil)         ; Refile in a single go
+(setq org-refile-use-outline-path t)                  ; Show full paths for refiling
 (setq org-capture-templates '(
 			      ("t" "TODO" entry (file+headline "~/org/todo.org" "Tasks")
 			       "* TODO %?\n  %i\n  %a")
@@ -179,6 +173,7 @@
 (projectile-mode +1)
 (key-chord-mode 1)
 (which-key-mode 1)
+(global-tree-sitter-mode 1)
 (menu-bar-mode -1)
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
@@ -188,9 +183,19 @@
 (global-evil-surround-mode 1)
 (global-flycheck-mode 1)
 (global-display-line-numbers-mode 1)
+(popwin-mode 1)
 (add-hook 'org-mode-hook #'org-indent-mode)
 
 (add-hook 'after-init-hook #'doom-modeline-mode)
+
+;; Mark org-capture windows as popups
+(push '("*Org Select*" :height 15) popwin:special-display-config)
+(push '("^CAPTURE-.+\*.org$" :regexp t) popwin:special-display-config)
+
+(with-eval-after-load 'org
+    (defun org-switch-to-buffer-other-window (&rest args)
+      "Same as the original, but lacking the wrapping call to `org-no-popups'"
+      (apply 'switch-to-buffer-other-window args)))
 
 (setq org-directory (expand-file-name "~/org/"))
 
@@ -205,11 +210,19 @@
 (setq-default indent-tabs-mode nil)
 (setq-default tab-width 4)
 
+(add-hook 'eshell-mode-hook (lambda () (setq-local show-trailing-whitespace nil)))
+(add-hook 'comint-mode-hook (lambda () (setq-local show-trailing-whitespace nil)))
+
+(setq org-todo-keywords
+      '((sequence "TODO(t)" "|" "DONE(d)")
+        (sequence "REPORT(r)" "BUG(b)" "KNOWNCAUSE(k)" "|" "FIXED(f)")
+        (sequence "|" "CANCELED(c)")))
+
 (fset 'yes-or-no-p 'y-or-n-p)
 
 (defun set-exec-path-from-shell-PATH ()
   "Set up Emacs' `exec-path' and PATH environment variable to match
-that used by the user's shell.
+   that used by the user's shell.
 
 This is particularly useful under Mac OS X and macOS, where GUI
 apps are not started from a shell."
@@ -221,16 +234,14 @@ apps are not started from a shell."
     (setenv "PATH" path-from-shell)
     (setq exec-path (split-string path-from-shell path-separator))))
 
+
 (set-exec-path-from-shell-PATH)
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(org-agenda-files '("~/org/todo.org")))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
+
+(when (eq system-type 'darwin)
+    (setq indium-chrome-executable "~/.emacs.d/mac-launch-chrome.sh"))
+(when (eq system-type 'gnu/linux)
+  (setq indium-chrome-executable ""))
+
+(setq custom-file "~/.emacs.d/custom.el")
+(load custom-file :noerror)
+
