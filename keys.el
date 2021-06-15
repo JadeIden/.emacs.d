@@ -83,7 +83,7 @@
   )
 
 (my-leader-def
-  "<XF86TouchpadOn>" #'my/flycheck-hydra/body)
+  "<XF86Tools>" #'my/flycheck-hydra/body)
 
 (my-local-leader-def
  :keymaps 'org-mode-map
