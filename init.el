@@ -64,7 +64,7 @@
 (straight-use-package 'embark)
 
 (straight-use-package 'perspective)
-(straight-use-package 'hercules)
+(straight-use-package 'hydra)
 
 (straight-use-package 'page-break-lines)
 (straight-use-package 'all-the-icons)
