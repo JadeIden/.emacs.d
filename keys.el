@@ -18,6 +18,11 @@
                         :keymaps 'override
                         :prefix "SPC")
 
+(general-create-definer my-local-leader-def
+  :states 'normal
+  :keymaps 'override
+  :prefix "SPC m")
+
 (my-leader-def "<" #'consult-buffer)
 (my-leader-def ":" #'execute-extended-command)
 (my-leader-def ";" #'eval-expression)
@@ -47,6 +52,7 @@
   )
 (my-leader-def
   "ha" #'consult-apropos
+  "hf" #'describe-function
   "hk" #'describe-key
   )
 (my-leader-def
@@ -57,6 +63,7 @@
   "sd" #'consult-ripgrep
   "sl" #'consult-line
   "so" #'consult-outline
+  "sk" #'consult-yank-from-kill-ring
   )
 (my-leader-def
   "ll" #'consult-locate
@@ -66,8 +73,8 @@
   "nF" #'my/open-org-folder
   )
 (my-leader-def
-  "wv" #'split-window-right
-  "ws" #'split-window-below
+  "wv" #'my/split-n-swap-right
+  "ws" #'my/split-n-swap-below
   "wq" #'delete-window
   "wh" #'evil-window-left
   "wl" #'evil-window-right
@@ -75,9 +82,21 @@
   "wk" #'evil-window-up
   )
 
-(general-define-key "<f13>" #'embark-act) ;; F3
-(general-define-key "<f14>" #'embark-become) ;; F22
+(my-leader-def
+  "<XF86Tools>" #'my/flycheck-hydra/body)
+
+(my-local-leader-def
+ :keymaps 'org-mode-map
+ "t" #'org-todo)
+
+(my-local-leader-def
+ :keymaps 'lsp-mode-map
+ "a" #'lsp-execute-code-action)
+
+(general-define-key "<XF86Tools>" #'embark-act) ;; F13
+(general-define-key "<XF86Launch5>" #'embark-become) ;; F14
 
 (general-define-key :keymaps 'embark-symbol-map "r" #'lsp-find-references)
 (general-define-key "C-x C-e" #'eval-defun)
 (general-define-key :keymaps 'emacs-lisp-mode-map "C-c C-c" #'eval-buffer)
+(general-define-key :keymaps 'lsp-mode-map "C-c ." #'lsp-describe-thing-at-point)

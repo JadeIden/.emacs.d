@@ -70,6 +70,7 @@
 (straight-use-package 'all-the-icons)
 
 (straight-use-package 'magit)
+(straight-use-package 'ediff)
 
 (straight-use-package 'org-wild-notifier)
 
