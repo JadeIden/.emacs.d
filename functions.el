@@ -23,3 +23,17 @@
   (split-window-right)
   (windmove-right)
   (eshell))
+
+(defhydra my/flycheck-hydra ()
+    "
+    ^Clock^             ^Do^
+    ^─────^─────────────^──^─────────
+    _q_ quit            _p_ previous error
+    ^^                  _n_ next error
+    ^^                  _f_ fix error (if LSP)
+    "
+    ("q" nil)
+    ("p" #'flycheck-previous-error)
+    ("n" #'flycheck-next-error)
+    ("f" #'lsp-execute-code-action)
+    )

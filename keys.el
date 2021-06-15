@@ -82,6 +82,9 @@
   "wk" #'evil-window-up
   )
 
+(my-leader-def
+  "<XF86TouchpadOn>" #'my/flycheck-hydra/body)
+
 (my-local-leader-def
  :keymaps 'org-mode-map
  "t" #'org-todo)
@@ -90,8 +93,8 @@
  :keymaps 'lsp-mode-map
  "a" #'lsp-execute-code-action)
 
-(general-define-key "<XF86TouchpadOn>" #'embark-act) ;; F3
-(general-define-key "<XF86TouchpadOff>" #'embark-become) ;; F22
+(general-define-key "<XF86Tools>" #'embark-act) ;; F13
+(general-define-key "<XF86Launch5>" #'embark-become) ;; F14
 
 (general-define-key :keymaps 'embark-symbol-map "r" #'lsp-find-references)
 (general-define-key "C-x C-e" #'eval-defun)
