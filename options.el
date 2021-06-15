@@ -1,3 +1,3 @@
-(setq my/use-lsp t)
-(setq my/use-haskell t)
-(setq my/use-python t)
+(setq my/use-lsp nil)
+(setq my/use-haskell nil)
+(setq my/use-python nil)

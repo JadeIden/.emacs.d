@@ -11,6 +11,22 @@
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
 
+(setq evil-want-keybinding nil)
+(setq evil-collection-calendar-want-org-bindings t)
+(setq evil-collection-outline-bind-tab-p t)
+(setq evil-collection-setup-minibuffer t)
+
+(setq org-agenda-diary-file "~/org/todo.org")
+(setq org-todo-keywords
+      '((sequence "TODO(t)" "|" "DONE(d)")
+        (sequence "REPORT(r)" "BUG(b)" "KNOWNCAUSE(k)" "|" "FIXED(f)")
+        (sequence "|" "CANCELED(c)")))
+(setq org-agenda-files '("~/org/todo.org" "~/org/todo-archive.org"))
+(setq org-agenda-start-on-weekday 0)
+(setq org-refile-targets '((nil :maxlevel . 9) (org-agenda-files :maxlevel . 9)))
+(setq org-outline-path-complete-in-steps nil)         ; Refile in a single go
+(setq org-refile-use-outline-path t)                  ; Show full paths for refiling
+
 
 (straight-use-package 'evil)
 (straight-use-package 'evil-collection)
@@ -61,6 +77,7 @@
 (load (expand-file-name "~/.emacs.d/options.el"))
 (load (expand-file-name "~/.emacs.d/functions.el"))
 (load (expand-file-name "~/.emacs.d/keys.el"))
+(load (expand-file-name "~/.emacs.d/locals.el"))
 
 (require 'company)
 (require 'company-lsp)
@@ -88,15 +105,11 @@
 (when my/use-lsp
   (straight-use-package 'lsp-mode))
 
-(require 'tree-sitter)
-(require 'tree-sitter-langs)
+;; (require 'tree-sitter)
+;; (require 'tree-sitter-langs)
 
 ;; bind evil-args text objects
 (setq evil-undo-system 'undo-fu)
-(setq evil-want-keybinding nil)
-(setq evil-collection-calendar-want-org-bindings t)
-(setq evil-collection-outline-bind-tab-p t)
-(setq evil-collection-setup-minibuffer t)
 (evil-collection-init)
 
 (setq completion-styles '(orderless))
@@ -109,11 +122,6 @@
 (setq orderless-skip-highlighting (lambda () selectrum-is-active))
 (setq selectrum-highlight-candidates-function #'orderless-highlight-matches)
 
-(setq org-agenda-files '("~/org/todo.org" "~/org/todo-archive.org"))
-(setq org-agenda-start-on-weekday 0)
-(setq org-refile-targets '((nil :maxlevel . 9) (org-agenda-files :maxlevel . 9)))
-(setq org-outline-path-complete-in-steps nil)         ; Refile in a single go
-(setq org-refile-use-outline-path t)                  ; Show full paths for refiling
 (setq org-capture-templates '(
 			      ("t" "TODO" entry (file+headline "~/org/todo.org" "Tasks")
 			       "* TODO %?\n  %i\n  %a")
@@ -170,7 +178,6 @@
 (projectile-mode +1)
 (key-chord-mode 1)
 (which-key-mode 1)
-(global-tree-sitter-mode 1)
 (menu-bar-mode -1)
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
@@ -214,3 +221,15 @@ apps are not started from a shell."
     (setq exec-path (split-string path-from-shell path-separator))))
 
 (set-exec-path-from-shell-PATH)
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(org-agenda-files '("~/org/todo.org")))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )

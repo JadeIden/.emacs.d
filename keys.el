@@ -75,8 +75,8 @@
   "wk" #'evil-window-up
   )
 
-(general-define-key "<XF86TouchpadOn>" #'embark-act) ;; F3
-(general-define-key "<XF86TouchpadOff>" #'embark-become) ;; F22
+(general-define-key "<f13>" #'embark-act) ;; F3
+(general-define-key "<f14>" #'embark-become) ;; F22
 
 (general-define-key :keymaps 'embark-symbol-map "r" #'lsp-find-references)
 (general-define-key "C-x C-e" #'eval-defun)
