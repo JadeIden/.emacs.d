@@ -195,6 +195,7 @@
 ;; Mark org-capture windows as popups
 (push '("*Org Select*" :height 15) popwin:special-display-config)
 (push '("^CAPTURE-.+\*.org$" :regexp t) popwin:special-display-config)
+(push '("*Flycheck errors*" :height 15) popwin:special-display-config)
 
 (with-eval-after-load 'org
     (defun org-switch-to-buffer-other-window (&rest args)

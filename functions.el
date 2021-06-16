@@ -34,7 +34,7 @@
 (defun my/org-file-by-date ()
   "Create an Org file with current time as name. Credit
 https://emacs.stackexchange.com/questions/14673/emacs-function-to-make-a-file-with-date-time-as-filename-and-a-shortcut-for-it"
-  (find-file (format-time-string "~/org/%Y-%m-%d--%H-%M-%S.org")))
+  (find-file (format-time-string "~/org/notes-%Y-%m-%d--%H-%M-%S.org")))
 
 (defhydra my/flycheck-hydra ()
     "
@@ -42,10 +42,12 @@ https://emacs.stackexchange.com/questions/14673/emacs-function-to-make-a-file-wi
     ^─────^─────────────^──^─────────
     _q_ quit            _p_ previous error
     ^^                  _n_ next error
+    ^^                  _l_ list errors
     ^^                  _f_ fix error (if LSP)
     "
     ("q" nil)
     ("p" #'flycheck-previous-error)
     ("n" #'flycheck-next-error)
+    ("l" #'flycheck-list-errors)
     ("f" #'lsp-execute-code-action)
     )
