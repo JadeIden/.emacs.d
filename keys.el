@@ -71,6 +71,7 @@
   )
 (my-leader-def
   "nF" #'my/open-org-folder
+  "ns" #'my/search-notes
   )
 (my-leader-def
   "wv" #'my/split-n-swap-right

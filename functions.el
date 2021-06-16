@@ -1,3 +1,5 @@
+;;; -*- lexical-binding: t; -*-
+
 (defun my/open-private-configuration ()
   (interactive)
   (let ((default-directory "~/.emacs.d/"))
@@ -23,6 +25,16 @@
   (split-window-right)
   (windmove-right)
   (eshell))
+
+(defun my/search-notes ()
+  (interactive)
+  (let ((default-directory org-directory))
+    (call-interactively #'consult-ripgrep)))
+
+(defun my/org-file-by-date ()
+  "Create an Org file with current time as name. Credit
+https://emacs.stackexchange.com/questions/14673/emacs-function-to-make-a-file-with-date-time-as-filename-and-a-shortcut-for-it"
+  (find-file (format-time-string "~/org/%Y-%m-%d--%H-%M-%S.org")))
 
 (defhydra my/flycheck-hydra ()
     "

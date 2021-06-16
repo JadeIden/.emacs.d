@@ -1,3 +1,5 @@
+;;; -*- lexical-binding: t; -*-
+
 ;; Straight.el bootstrap
 (defvar bootstrap-version)
 (let ((bootstrap-file
@@ -96,8 +98,9 @@
 (when my/use-lsp
   (straight-use-package 'lsp-mode))
 
-(require 'tree-sitter)
-(require 'tree-sitter-langs)
+(unless (eq system-type 'darwin)
+    (require 'tree-sitter)
+    (require 'tree-sitter-langs))
 
 ;; bind evil-args text objects
 (evil-collection-init)
@@ -121,7 +124,8 @@
 			      ("t" "TODO" entry (file+headline "~/org/todo.org" "Tasks")
 			       "* TODO %?\n  %i\n  %a")
 			      ("a" "Appointment" entry (file+headline "~/org/todo.org" "Appointments")
-			       "* %? \n%^T")))
+			       "* %? \n%^T")
+                  ("n" "Notes" plain #'my/org-file-by-date "%?")))
 
 ;; Credit to https://protesilaos.com/dotemacs/#h:d67ed8d0-d711-48b0-9f40-f88ae2e5c984
 (defvar embark-action-indicator)
@@ -240,7 +244,7 @@ apps are not started from a shell."
 (when (eq system-type 'darwin)
     (setq indium-chrome-executable "~/.emacs.d/mac-launch-chrome.sh"))
 (when (eq system-type 'gnu/linux)
-  (setq indium-chrome-executable ""))
+  (setq indium-chrome-executable "chromium-browser"))
 
 (setq custom-file "~/.emacs.d/custom.el")
 (load custom-file :noerror)
