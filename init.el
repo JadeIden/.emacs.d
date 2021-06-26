@@ -49,8 +49,11 @@
 
 (straight-use-package 'projectile)
 (straight-use-package 'flycheck)
-(straight-use-package 'tree-sitter)
-(straight-use-package 'tree-sitter-langs)
+
+(unless (eq system-type 'darwin)
+	(straight-use-package 'tree-sitter)
+	(straight-use-package 'tree-sitter-langs))
+
 (straight-use-package 'company)
 (straight-use-package 'company-lsp)
 (straight-use-package 'consult-lsp)
@@ -193,7 +196,8 @@
 (projectile-mode +1)
 (key-chord-mode 1)
 (which-key-mode 1)
-(global-tree-sitter-mode 1)
+(unless (eq system-type 'darwin)
+	(global-tree-sitter-mode 1))
 (menu-bar-mode -1)
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
