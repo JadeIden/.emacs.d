@@ -31,6 +31,34 @@
   (let ((default-directory org-directory))
     (call-interactively #'consult-ripgrep)))
 
+(defun make-toggle-function (buffer-name buffer-create-fn &optional switch-cont)
+  "Makes a toggle-function to have raise-or-create behaviour.
+
+Creates a toggle-function that executes BUFFER-CREATE-FN if a
+buffer named BUFFER-NAME doesn't exist, switches to the buffer
+named BUFFER-NAME if it exists, and switches to the previous
+buffer if we are currently visiting buffer BUFFER-NAME.
+
+The SWITCH-CONT argument is a function which, if given, is called
+after the buffer has been created or switched to.  This allows
+running further actions that setup the state of the buffer or
+modify it."
+  (lambda ()
+    (interactive)
+    (let ((target-buf (get-buffer buffer-name)))
+     (if target-buf
+     (if (eq (current-buffer) target-buf)
+         (progn
+           (message "switching to other buffer")
+           (switch-to-buffer nil))
+         (progn
+           (message "switching back...")
+           (switch-to-buffer buffer-name)
+           (when switch-cont (funcall switch-cont))))
+       (message "creating buffer...")
+       (funcall buffer-create-fn)
+       (when switch-cont (funcall switch-cont))))))
+
 (defun my/org-file-by-date ()
   "Create an Org file with current time as name. Credit
 https://emacs.stackexchange.com/questions/14673/emacs-function-to-make-a-file-with-date-time-as-filename-and-a-shortcut-for-it"

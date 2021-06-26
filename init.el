@@ -19,6 +19,11 @@
 (setq evil-collection-outline-bind-tab-p t)
 (setq evil-collection-setup-minibuffer t)
 
+(setq org-directory (expand-file-name "~/org/"))
+(setq org-agenda-diary-file nil)
+(setq org-journal-dir (concat org-directory "journal/"))
+(setq org-journal-file-type 'weekly)
+
 (straight-use-package 'evil)
 (straight-use-package 'evil-collection)
 (straight-use-package 'evil-surround)
@@ -35,6 +40,8 @@
 
 (straight-use-package 'web-mode)
 (straight-use-package 'skewer-mode)
+
+(straight-use-package 'jq-mode)
 
 (straight-use-package 'doom-modeline)
 
@@ -56,6 +63,14 @@
 (straight-use-package 'consult)
 (straight-use-package 'embark)
 
+(when (eq system-type 'gnu/linux)
+  (straight-use-package 'ivy)
+  (straight-use-package 'helm)
+  (load (expand-file-name "~/.emacs.d/launcher.el"))
+  )
+
+
+
 (straight-use-package 'perspective)
 (straight-use-package 'hydra)
 
@@ -65,6 +80,8 @@
 (straight-use-package 'magit)
 (straight-use-package 'popwin)
 
+(straight-use-package 'org)
+(straight-use-package 'org-journal)
 (straight-use-package 'org-wild-notifier)
 
 (require 'evil)
@@ -121,11 +138,10 @@
 (setq org-outline-path-complete-in-steps nil)         ; Refile in a single go
 (setq org-refile-use-outline-path t)                  ; Show full paths for refiling
 (setq org-capture-templates '(
-			      ("t" "TODO" entry (file+headline "~/org/todo.org" "Tasks")
-			       "* TODO %?\n  %i\n  %a")
-			      ("a" "Appointment" entry (file+headline "~/org/todo.org" "Appointments")
-			       "* %? \n%^T")
-                  ("n" "Notes" plain #'my/org-file-by-date "%?")))
+			      ("t" "TODO" entry (file+headline "~/org/todo.org" "Tasks") "* TODO %?\n  %i\n  %a")
+			      ("a" "Appointment" entry (file+headline "~/org/todo.org" "Appointments") "* %? \n%^T")
+                  ("n" "Notes" plain #'my/org-file-by-date "%?")
+                  ))
 
 ;; Credit to https://protesilaos.com/dotemacs/#h:d67ed8d0-d711-48b0-9f40-f88ae2e5c984
 (defvar embark-action-indicator)
@@ -201,8 +217,6 @@
     (defun org-switch-to-buffer-other-window (&rest args)
       "Same as the original, but lacking the wrapping call to `org-no-popups'"
       (apply 'switch-to-buffer-other-window args)))
-
-(setq org-directory (expand-file-name "~/org/"))
 
 (defun my/lazy--find-file ()
   (interactive)
