@@ -83,6 +83,8 @@
   "wk" #'evil-window-up
   )
 
+(define-key yas-minor-mode-map (kbd "TAB") nil)
+
 (my-leader-def
   "<XF86Tools>" #'my/flycheck-hydra/body)
 

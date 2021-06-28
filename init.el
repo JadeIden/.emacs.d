@@ -191,6 +191,7 @@
 (global-evil-surround-mode 1)
 (global-flycheck-mode 1)
 (global-display-line-numbers-mode 1)
+(yas-global-mode 1)
 (popwin-mode 1)
 (add-hook 'org-mode-hook #'org-indent-mode)
 
@@ -214,6 +215,7 @@
 
 (setq projectile-switch-project-action #'my/lazy--find-file)
 (setq org-hide-emphasis-markers t)
+(setq org-agenda-diary-file nil)
 
 (setq-default show-trailing-whitespace t)
 (setq-default indent-tabs-mode nil)
