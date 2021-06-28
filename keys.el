@@ -49,6 +49,7 @@
   )
 (my-leader-def
   "bd" #'kill-this-buffer
+  "br" #'revert-buffer
   )
 (my-leader-def
   "ha" #'consult-apropos
@@ -72,6 +73,9 @@
 (my-leader-def
   "nF" #'my/open-org-folder
   "ns" #'my/search-notes
+  "njj" #'org-journal-new-entry
+  "njn" #'org-journal-new-entry
+  "njv" #'org-journal-open-current-journal-file
   )
 (my-leader-def
   "wv" #'my/split-n-swap-right
@@ -91,6 +95,10 @@
 (my-local-leader-def
  :keymaps 'org-mode-map
  "t" #'org-todo)
+
+(my-local-leader-def
+  :keymaps 'json-mode
+  "q" #'jq-interactively)
 
 (my-local-leader-def
  :keymaps 'lsp-mode-map
