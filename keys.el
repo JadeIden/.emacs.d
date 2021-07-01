@@ -87,7 +87,7 @@
   "wk" #'evil-window-up
   )
 
-(define-key yas-minor-mode-map (kbd "TAB") nil)
+;;(define-key yas-minor-mode-map (kbd "TAB") nil)
 
 (my-leader-def
   "<XF86Tools>" #'my/flycheck-hydra/body)
@@ -111,3 +111,24 @@
 (general-define-key "C-x C-e" #'eval-defun)
 (general-define-key :keymaps 'emacs-lisp-mode-map "C-c C-c" #'eval-buffer)
 (general-define-key :keymaps 'lsp-mode-map "C-c ." #'lsp-describe-thing-at-point)
+
+;; Credit to /u/yankfade on reddit!
+(my-local-leader-def
+  :mode 'smerge-mode
+  "M" #'hydra-smerge/body)
+
+(defun js/smerge-first ()
+  (interactive)
+  (progn
+    (goto-char (point-min))
+    (smerge-next)))
+
+(defhydra hydra-smerge
+  (:quit-key "q")
+  "smerge"
+  ("f" js/smerge-first "First")
+  ("n" smerge-next "Next")
+  ("p" smerge-prev "Previous")
+  ("u" smerge-keep-upper "Keep Upper")
+  ("l" smerge-keep-lower "Keep Lower")
+  ("b" smerge-keep-all "Keep Both"))

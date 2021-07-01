@@ -59,6 +59,27 @@ modify it."
        (funcall buffer-create-fn)
        (when switch-cont (funcall switch-cont))))))
 
+(defun my/get-git-branch-name ()
+  (magit-get-current-branch)
+)
+
+(defun my/wrike--extract-wrike-number ()
+  (car (cdr (s-match "WRIKE-\\([[:digit:]]+\\)-\\(.+\\)" (magit-get-current-branch)))))
+
+(defun my/wrike--extract-client-name ()
+  (car (last (s-split "-" (magit-get-current-branch)))))
+
+(defun my/wrike-init-commit ()
+  (interactive)
+  (insert (concat
+   "WRIKE-"
+   (my/wrike--extract-wrike-number)
+   "\n - "
+   (my/wrike--extract-client-name)
+   "\n - https://www.wrike.com/open.htm?id="
+   (my/wrike--extract-wrike-number))
+))
+
 (defun my/org-file-by-date ()
   "Create an Org file with current time as name. Credit
 https://emacs.stackexchange.com/questions/14673/emacs-function-to-make-a-file-with-date-time-as-filename-and-a-shortcut-for-it"

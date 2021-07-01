@@ -32,6 +32,10 @@
 
 (straight-use-package 'general)
 
+(straight-use-package 'csv-mode)
+
+(straight-use-package 'yasnippet)
+
 (straight-use-package 'key-chord)
 
 (straight-use-package 'no-littering)
@@ -55,7 +59,6 @@
 	(straight-use-package 'tree-sitter-langs))
 
 (straight-use-package 'company)
-(straight-use-package 'company-lsp)
 (straight-use-package 'consult-lsp)
 (straight-use-package 'undo-fu)
 (straight-use-package 'help-fns-plus)
@@ -93,8 +96,6 @@
 (load (expand-file-name "~/.emacs.d/keys.el"))
 
 (require 'company)
-(require 'company-lsp)
-(push 'company-lsp company-backends)
 (add-hook 'after-init-hook 'global-company-mode)
 
 (straight-use-package 'doom-themes)
@@ -116,7 +117,8 @@
   )
 
 (when my/use-lsp
-  (straight-use-package 'lsp-mode))
+  (straight-use-package 'lsp-mode)
+  (setq lsp-prefer-capf t))
 
 (unless (eq system-type 'darwin)
     (require 'tree-sitter)
