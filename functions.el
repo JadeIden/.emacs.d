@@ -67,7 +67,10 @@ modify it."
   (car (cdr (s-match "WRIKE-\\([[:digit:]]+\\)-\\(.+\\)" (magit-get-current-branch)))))
 
 (defun my/wrike--extract-client-name ()
-  (car (last (s-split "-" (magit-get-current-branch)))))
+  (s-with (car (last (s-split "-" (magit-get-current-branch))))
+    s-titleize
+    (s-replace "_" " ")
+    ))
 
 (defun my/wrike-init-commit ()
   (interactive)

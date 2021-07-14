@@ -19,6 +19,8 @@
 (setq evil-collection-outline-bind-tab-p t)
 (setq evil-collection-setup-minibuffer t)
 
+(setq js-indent-level 2)
+
 (setq org-directory (expand-file-name "~/org/"))
 (setq org-agenda-diary-file nil)
 (setq org-journal-dir (concat org-directory "journal/"))
@@ -29,6 +31,8 @@
 (straight-use-package 'evil-surround)
 (straight-use-package 'evil-commentary)
 (straight-use-package 'evil-args)
+
+(straight-use-package 's)
 
 (straight-use-package 'general)
 
@@ -118,6 +122,11 @@
 
 (when my/use-lsp
   (straight-use-package 'lsp-mode)
+
+  (defun org-babel-edit-prep:javascript (babel-info)
+    (setq-local buffer-file-name (->> babel-info (alist-get :tangle)))
+    (lsp))
+
   (setq lsp-prefer-capf t))
 
 (unless (eq system-type 'darwin)
