@@ -103,3 +103,13 @@ https://emacs.stackexchange.com/questions/14673/emacs-function-to-make-a-file-wi
     ("l" #'flycheck-list-errors)
     ("f" #'lsp-execute-code-action)
     )
+
+(defun my/sample (lst)
+  "Return a random element of LST"
+  (nth (random (length lst)) lst))
+
+(defun parse-csv-to-array (contents)
+  (parse-csv-string-rows contents ?\, ?\" "\n"))
+
+(defun my/mac-javascript-exec (js &optional tab-descriptor)
+  (do-applescript (concat "tell application \"Google Chrome\" to execute " (if tab-descriptor tab-descriptor "front window's active tab") " javascript \"" js "\"")))

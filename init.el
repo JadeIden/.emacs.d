@@ -19,7 +19,7 @@
 (setq evil-collection-outline-bind-tab-p t)
 (setq evil-collection-setup-minibuffer t)
 
-(setq js-indent-level 2)
+(setq js-indent-level 4)
 
 (setq org-directory (expand-file-name "~/org/"))
 (setq org-agenda-diary-file nil)
@@ -32,7 +32,11 @@
 (straight-use-package 'evil-commentary)
 (straight-use-package 'evil-args)
 
+(straight-use-package 'paredit)
+
 (straight-use-package 's)
+(straight-use-package 'f)
+(straight-use-package 'hl-todo)
 
 (straight-use-package 'general)
 
@@ -101,6 +105,7 @@
 
 (require 'company)
 (add-hook 'after-init-hook 'global-company-mode)
+(add-hook 'after-init-hook 'global-hl-todo-mode)
 
 (straight-use-package 'doom-themes)
 (load-theme 'doom-tomorrow-night t)

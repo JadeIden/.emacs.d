@@ -14,9 +14,10 @@
 (define-key evil-motion-state-map "H" 'evil-backward-arg)
 
 (general-create-definer my-leader-def
-                        :states 'normal
+                        :states '(normal visual)
                         :keymaps 'override
-                        :prefix "SPC")
+                        :prefix "SPC"
+                        )
 
 (general-create-definer my-local-leader-def
   :states 'normal
@@ -46,6 +47,9 @@
   "pc" #'projectile-command-map
   "pd" #'projectile-remove-known-project
   "pa" #'projectile-add-known-project
+  )
+(my-leader-def
+  "is" #'yas-insert-snippet
   )
 (my-leader-def
   "bd" #'kill-this-buffer
