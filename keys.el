@@ -69,6 +69,7 @@
   "sl" #'consult-line
   "so" #'consult-outline
   "sk" #'consult-yank-from-kill-ring
+  "ss" #'consult-imenu
   )
 (my-leader-def
   "ll" #'consult-locate

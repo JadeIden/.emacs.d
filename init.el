@@ -41,6 +41,9 @@
 (straight-use-package 'general)
 
 (straight-use-package 'csv-mode)
+(straight-use-package 'go-mode)
+(straight-use-package 'mixed-pitch)
+(straight-use-package 'org-bullets)
 
 (straight-use-package 'yasnippet)
 
@@ -282,6 +285,9 @@ apps are not started from a shell."
     (setq indium-chrome-executable "~/.emacs.d/mac-launch-chrome.sh"))
 (when (eq system-type 'gnu/linux)
   (setq indium-chrome-executable "chromium-browser"))
+
+(add-hook 'org-mode 'mixed-pitch-mode)
+(add-hook 'org-mode 'org-bullets-mode)
 
 (setq custom-file "~/.emacs.d/custom.el")
 (load custom-file :noerror)
