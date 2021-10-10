@@ -42,13 +42,10 @@
 
 (straight-use-package 'csv-mode)
 (straight-use-package 'go-mode)
-<<<<<<< HEAD
 (straight-use-package 'slime)
 (straight-use-package 'sly)
-=======
 (straight-use-package 'mixed-pitch)
 (straight-use-package 'org-bullets)
->>>>>>> 055f9f403b7ba0e317da68112c5e17324ddfd1ec
 
 (straight-use-package 'yasnippet)
 
