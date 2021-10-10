@@ -19,6 +19,8 @@
 (setq evil-collection-outline-bind-tab-p t)
 (setq evil-collection-setup-minibuffer t)
 
+(setq js-indent-level 4)
+
 (setq org-directory (expand-file-name "~/org/"))
 (setq org-agenda-diary-file nil)
 (setq org-journal-dir (concat org-directory "journal/"))
@@ -30,12 +32,23 @@
 (straight-use-package 'evil-commentary)
 (straight-use-package 'evil-args)
 
+(straight-use-package 'paredit)
+
+(straight-use-package 's)
+(straight-use-package 'f)
+(straight-use-package 'hl-todo)
+
 (straight-use-package 'general)
 
 (straight-use-package 'csv-mode)
 (straight-use-package 'go-mode)
+<<<<<<< HEAD
 (straight-use-package 'slime)
 (straight-use-package 'sly)
+=======
+(straight-use-package 'mixed-pitch)
+(straight-use-package 'org-bullets)
+>>>>>>> 055f9f403b7ba0e317da68112c5e17324ddfd1ec
 
 (straight-use-package 'yasnippet)
 
@@ -95,6 +108,7 @@
 
 (require 'company)
 (add-hook 'after-init-hook 'global-company-mode)
+(add-hook 'after-init-hook 'global-hl-todo-mode)
 
 (straight-use-package 'olivetti)
 
@@ -118,6 +132,11 @@
 
 (when my/use-lsp
   (straight-use-package 'lsp-mode)
+
+  (defun org-babel-edit-prep:javascript (babel-info)
+    (setq-local buffer-file-name (->> babel-info (alist-get :tangle)))
+    (lsp))
+
   (setq lsp-prefer-capf t))
 
 (unless (eq system-type 'darwin)
@@ -251,6 +270,9 @@ apps are not started from a shell."
     (setq indium-chrome-executable "~/.emacs.d/mac-launch-chrome.sh"))
 (when (eq system-type 'gnu/linux)
   (setq indium-chrome-executable "chromium-browser"))
+
+(add-hook 'org-mode 'mixed-pitch-mode)
+(add-hook 'org-mode 'org-bullets-mode)
 
 (setq custom-file "~/.emacs.d/custom.el")
 (load custom-file :noerror)
