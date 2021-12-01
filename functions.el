@@ -113,3 +113,22 @@ https://emacs.stackexchange.com/questions/14673/emacs-function-to-make-a-file-wi
 
 (defun my/mac-javascript-exec (js &optional tab-descriptor)
   (do-applescript (concat "tell application \"Google Chrome\" to execute " (if tab-descriptor tab-descriptor "front window's active tab") " javascript \"" js "\"")))
+
+(defvar current-dt-format "%a %b %d %H:%M:%S %Z %Y")
+(defun my/current-datetime ()
+  "Get current time. THanks to StackOverflow!"
+  (format-time-string current-dt-format (current-time)))
+
+(defun my/yank-updated-buffer ()
+  "Update DEBUG_TIMESTAMP with the current time, then yank."
+  (interactive)
+  (save-excursion
+    (goto-char (point-min))
+    (while (re-search-forward "DEBUG_TIMESTAMP = \".*\"" nil t)
+      (replace-match (concat "DEBUG_TIMESTAMP = \"" (my/current-datetime) "\""))))
+   (kill-new (buffer-string)))
+
+(defun my/yank-buffer ()
+  "Yanks the buffer to the clipboard."
+  (interactive)
+  (kill-new (buffer-string)))

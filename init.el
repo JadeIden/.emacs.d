@@ -18,6 +18,7 @@
 (setq evil-collection-calendar-want-org-bindings t)
 (setq evil-collection-outline-bind-tab-p t)
 (setq evil-collection-setup-minibuffer t)
+(setq-default evil-symbol-word-search t)
 
 (setq js-indent-level 4)
 
@@ -27,16 +28,19 @@
 (setq org-journal-file-type 'weekly)
 
 (straight-use-package 'evil)
+(straight-use-package 'evil-plugins)
 (straight-use-package 'evil-collection)
 (straight-use-package 'evil-surround)
 (straight-use-package 'evil-commentary)
 (straight-use-package 'evil-args)
-
-(straight-use-package 'paredit)
+(straight-use-package 
+ '(evil-repeat-motion :host github
+                      :repo "yyoncho/evil-repeat-motion"))
 
 (straight-use-package 's)
 (straight-use-package 'f)
 (straight-use-package 'hl-todo)
+(straight-use-package 'web-beautify)
 
 (straight-use-package 'general)
 
@@ -44,6 +48,7 @@
 (straight-use-package 'go-mode)
 (straight-use-package 'mixed-pitch)
 (straight-use-package 'org-bullets)
+(require 'org-protocol)
 
 (straight-use-package 'yasnippet)
 
@@ -64,10 +69,15 @@
 
 (straight-use-package 'projectile)
 (straight-use-package 'flycheck)
+(straight-use-package 'bookmark+)
+(require 'bookmark+)
 
 (unless (eq system-type 'darwin)
 	(straight-use-package 'tree-sitter)
 	(straight-use-package 'tree-sitter-langs))
+
+
+(straight-use-package 'tide)
 
 (straight-use-package 'company)
 (straight-use-package 'consult-lsp)
@@ -79,14 +89,13 @@
 (straight-use-package 'orderless)
 (straight-use-package 'consult)
 (straight-use-package 'embark)
+(straight-use-package 'embark-consult)
 
 (when (eq system-type 'gnu/linux)
   (straight-use-package 'ivy)
   (straight-use-package 'helm)
   (load (expand-file-name "~/.emacs.d/launcher.el"))
   )
-
-
 
 (straight-use-package 'perspective)
 (straight-use-package 'hydra)
@@ -102,6 +111,19 @@
 (straight-use-package 'org-wild-notifier)
 
 (require 'evil)
+
+(require 'evil-little-word)
+(define-key evil-normal-state-map (kbd "w") 'evil-forward-little-word-begin)
+(define-key evil-normal-state-map (kbd "b") 'evil-backward-little-word-begin)
+(define-key evil-normal-state-map (kbd "e") 'evil-forward-little-word-end)
+(define-key evil-operator-state-map (kbd "w") 'evil-forward-little-word-begin)
+(define-key evil-operator-state-map (kbd "b") 'evil-backward-little-word-begin)
+(define-key evil-operator-state-map (kbd "e") 'evil-backward-little-word-end)
+(define-key evil-visual-state-map (kbd "w") 'evil-forward-little-word-begin)
+(define-key evil-visual-state-map (kbd "b") 'evil-backward-little-word-begin)
+(define-key evil-visual-state-map (kbd "e") 'evil-forward-little-word-end)
+(define-key evil-visual-state-map (kbd "i w") 'evil-inner-little-word)
+
 (load (expand-file-name "~/.emacs.d/options.el"))
 (load (expand-file-name "~/.emacs.d/functions.el"))
 (load (expand-file-name "~/.emacs.d/keys.el"))
@@ -113,6 +135,8 @@
 (straight-use-package 'doom-themes)
 (load-theme 'doom-tomorrow-night t)
 
+(setq org-confirm-babel-evaluate nil)
+
 (when my/use-haskell
   (straight-use-package 'haskell-mode)
   (straight-use-package 'lsp-haskell)
@@ -121,12 +145,19 @@
 (when my/use-python
   (straight-use-package 'ob-ipython)
   (org-babel-do-load-languages 'org-babel-load-languages
-    '((ipython . t)
+                               '((ipython . t)
+                                 (shell . t)
     ;; other languages..
     ))
   (add-hook 'python-mode-hook #'lsp)
   (setq org-confirm-babel-evaluate nil)
   )
+
+(unless my/use-python
+  (org-babel-do-load-languages 'org-babel-load-languages
+                               '((shell . t)
+                                 )
+                               ))
 
 (when my/use-lsp
   (straight-use-package 'lsp-mode)
@@ -137,6 +168,22 @@
 
   (setq lsp-prefer-capf t))
 
+(defun setup-tide-mode ()
+  (interactive)
+  (tide-setup)
+  (flycheck-mode +1)
+  (eldoc-mode +1)
+  (tide-hl-identifier-mode +1)
+  ;; company is an optional dependency. You have to
+  ;; install it separately via package-install
+  ;; `M-x package-install [ret] company`
+  (company-mode +1))
+
+;; aligns annotation to the right hand side
+(setq company-tooltip-align-annotations t)
+
+(add-hook 'js2-mode-hook #'setup-tide-mode)
+
 (unless (eq system-type 'darwin)
     (require 'tree-sitter)
     (require 'tree-sitter-langs))
@@ -144,7 +191,8 @@
 ;; bind evil-args text objects
 (evil-collection-init)
 
-(setq completion-styles '(orderless))
+
+(setq completion-styles '(orderless initials))
 
 ;; Persist history over Emacs restarts
 (savehist-mode)
@@ -215,6 +263,9 @@
 (projectile-mode +1)
 (key-chord-mode 1)
 (which-key-mode 1)
+(show-paren-mode 1)
+(evil-repeat-motion-mode 1)
+(electric-pair-mode 1)
 (unless (eq system-type 'darwin)
 	(global-tree-sitter-mode 1))
 (menu-bar-mode -1)
@@ -286,9 +337,17 @@ apps are not started from a shell."
 (when (eq system-type 'gnu/linux)
   (setq indium-chrome-executable "chromium-browser"))
 
+(setq-default evil-surround-pairs-alist
+              (push '(?| . ("(" . " || '')")) evil-surround-pairs-alist))
+
 (add-hook 'org-mode 'mixed-pitch-mode)
 (add-hook 'org-mode 'org-bullets-mode)
+
+(add-hook 'embark-collect-mode-hook 'consult-preview-at-point-mode)
+
+(add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
 
 (setq custom-file "~/.emacs.d/custom.el")
 (load custom-file :noerror)
 
+(put 'narrow-to-region 'disabled nil)

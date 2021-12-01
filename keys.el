@@ -43,12 +43,6 @@
   "of" #'make-frame
   )
 (my-leader-def
-  "pp" #'projectile-switch-project
-  "pc" #'projectile-command-map
-  "pd" #'projectile-remove-known-project
-  "pa" #'projectile-add-known-project
-  )
-(my-leader-def
   "is" #'yas-insert-snippet
   )
 (my-leader-def
@@ -62,6 +56,7 @@
   )
 (my-leader-def
   "gg" #'magit
+  "gb" #'magit-blame
   "gi" #'magit-init
   )
 (my-leader-def
@@ -117,6 +112,7 @@
 (general-define-key :keymaps 'emacs-lisp-mode-map "C-c C-c" #'eval-buffer)
 (general-define-key :keymaps 'lsp-mode-map "C-c ." #'lsp-describe-thing-at-point)
 
+(general-define-key "C-SPC" 'embark-act)
 ;; Credit to /u/yankfade on reddit!
 (my-local-leader-def
   :mode 'smerge-mode
