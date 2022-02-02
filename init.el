@@ -46,6 +46,8 @@
 
 (straight-use-package 'csv-mode)
 (straight-use-package 'go-mode)
+(straight-use-package 'slime)
+(straight-use-package 'sly)
 (straight-use-package 'mixed-pitch)
 (straight-use-package 'org-bullets)
 
@@ -66,8 +68,6 @@
 (straight-use-package 'jq-mode)
 
 (straight-use-package 'doom-modeline)
-
-(straight-use-package 'indium)
 
 (straight-use-package 'projectile)
 (straight-use-package 'flycheck)
@@ -111,6 +111,8 @@
 (straight-use-package 'org)
 (straight-use-package 'org-journal)
 (straight-use-package 'org-wild-notifier)
+(when my/use-exwm
+  (straight-use-package 'exwm))
 
 (require 'evil)
 
@@ -133,6 +135,8 @@
 (require 'company)
 (add-hook 'after-init-hook 'global-company-mode)
 (add-hook 'after-init-hook 'global-hl-todo-mode)
+
+(straight-use-package 'olivetti)
 
 (straight-use-package 'doom-themes)
 (load-theme 'doom-tomorrow-night t)
@@ -215,32 +219,10 @@
                   ("n" "Notes" plain #'my/org-file-by-date "%?")
                   ))
 
-;; Credit to https://protesilaos.com/dotemacs/#h:d67ed8d0-d711-48b0-9f40-f88ae2e5c984
-(defvar embark-action-indicator)
-(defvar embark-become-indicator) (declare-function which-key--show-keymap "which-key")
-(declare-function which-key--hide-popup-ignore-command "which-key")
-
-(defvar prot-embark--which-key-state nil
-  "Store state of Embark's `which-key' hints.")
-
-;;;###autoload
-(defun prot-embark-toggle-which-key ()
-  "Toggle `which-key' hints for Embark actions."
-  (interactive)
-  (if prot-embark--which-key-state
-      (progn
-        (setq embark-action-indicator
-                   (let ((act (propertize "Act" 'face 'highlight)))
-                     (cons act (concat act " on '%s'"))))
-        (setq prot-embark--which-key-state nil))
-    (setq embark-action-indicator
-          (lambda (map _target)
-            (which-key--show-keymap "Embark" map nil nil 'no-paging)
-            #'which-key--hide-popup-ignore-command)
-          embark-become-indicator embark-action-indicator)
-    (setq prot-embark--which-key-state t)))
-
-(prot-embark-toggle-which-key)
+(setq embark-action-indicator (lambda (map __target)
+                                (which-key--show-keymap "Embark" map nil nil 'no-paging)
+                                #'which-key--hide-popup-ignore-command)
+      embark-become-indicator embark-action-indicator)
 
 ;; No more squiggles! Thanks to https://stackoverflow.com/a/18330742
 (defvar --backup-directory (concat user-emacs-directory "backups"))
@@ -282,6 +264,7 @@
 (global-display-line-numbers-mode 1)
 (yas-global-mode 1)
 (popwin-mode 1)
+(display-battery-mode 1)
 (add-hook 'org-mode-hook #'org-indent-mode)
 
 (add-hook 'after-init-hook #'doom-modeline-mode)
@@ -317,6 +300,10 @@
         (sequence "|" "CANCELED(c)")))
 
 (fset 'yes-or-no-p 'y-or-n-p)
+(setq password-cache t)
+(setq password-cache-expiry 3600)
+(setq eshell-prefer-lisp-functions t)
+(setq eshell-prefer-lisp-variables t)
 
 (defun set-exec-path-from-shell-PATH ()
   "Set up Emacs' `exec-path' and PATH environment variable to match

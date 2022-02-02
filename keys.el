@@ -16,6 +16,7 @@
 (general-create-definer my-leader-def
                         :states '(normal visual)
                         :keymaps 'override
+                        :global-prefix "s-SPC"
                         :prefix "SPC"
                         )
 
@@ -82,9 +83,13 @@
   "ws" #'my/split-n-swap-below
   "wq" #'delete-window
   "wh" #'evil-window-left
+  "w <left>" #'evil-window-left
   "wl" #'evil-window-right
+  "w <right>" #'evil-window-right
   "wj" #'evil-window-down
+  "w <down>" #'evil-window-down
   "wk" #'evil-window-up
+  "w <up>" #'evil-window-up
   )
 (my-leader-def
   "yy" #'my/yank-buffer
@@ -112,8 +117,7 @@
  :keymaps 'lsp-mode-map
  "a" #'lsp-execute-code-action)
 
-(general-define-key "<XF86Tools>" #'embark-act) ;; F13
-(general-define-key "<XF86Launch5>" #'embark-become) ;; F14
+(general-define-key "C-SPC" #'embark-act)
 
 (general-define-key :keymaps 'embark-symbol-map "r" #'lsp-find-references)
 (general-define-key "C-x C-e" #'eval-defun)

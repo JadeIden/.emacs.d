@@ -13,4 +13,4 @@
  ;; If there is more than one, they won't work right.
  '(flycheck-info ((t (:underline "#b5bd68"))))
  '(flycheck-warning ((t (:underline "khaki"))))
- '(variable-pitch ((t (:height 1.2 :family "Linux Libertine")))))
+ '(variable-pitch ((t (:height 1.3 :family "Linux Libertine")))))
