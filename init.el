@@ -48,6 +48,8 @@
 (straight-use-package 'go-mode)
 (straight-use-package 'mixed-pitch)
 (straight-use-package 'org-bullets)
+
+(straight-use-package 'git-gutter)
 (require 'org-protocol)
 
 (straight-use-package 'yasnippet)
@@ -259,6 +261,7 @@
 
 
 (selectrum-mode +1)
+(global-git-gutter-mode +1)
 (marginalia-mode +1)
 (projectile-mode +1)
 (key-chord-mode 1)

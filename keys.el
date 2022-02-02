@@ -86,6 +86,14 @@
   "wj" #'evil-window-down
   "wk" #'evil-window-up
   )
+(my-leader-def
+  "yy" #'my/yank-buffer
+  )
+
+(my-leader-def
+  :keymaps 'js2-mode-map
+  "rs" #'tide-rename-symbol
+  )
 
 ;;(define-key yas-minor-mode-map (kbd "TAB") nil)
 
@@ -113,6 +121,20 @@
 (general-define-key :keymaps 'lsp-mode-map "C-c ." #'lsp-describe-thing-at-point)
 
 (general-define-key "C-SPC" 'embark-act)
+(general-define-key :states 'normal "gD" #'my/goto-definition-in-other-window)
+(general-define-key :states 'normal "*" #'my/consult-line-at-point)
+(general-define-key :states '(normal visual) ";" #'evil-repeat-motion)
+
+(defun my/goto-definition-in-other-window ()
+  (interactive)
+  (split-window-right)
+  (windmove-right)
+  (evil-goto-definition))
+
+(defun my/consult-line-at-point ()
+  (interactive)
+  (consult-line (symbol-name (symbol-at-point))))
+
 ;; Credit to /u/yankfade on reddit!
 (my-local-leader-def
   :mode 'smerge-mode
