@@ -13,6 +13,15 @@
 (define-key evil-motion-state-map "L" 'evil-forward-arg)
 (define-key evil-motion-state-map "H" 'evil-backward-arg)
 
+(define-key evil-normal-state-map "j" 'evil-next-visual-line)
+(define-key evil-normal-state-map "k" 'evil-previous-visual-line)
+(define-key evil-normal-state-map "^" 'evil-first-non-blank-of-visual-line)
+(define-key evil-normal-state-map "$" 'evil-end-of-visual-line)
+(define-key evil-visual-state-map "j" 'evil-next-visual-line)
+(define-key evil-visual-state-map "k" 'evil-previous-visual-line)
+(define-key evil-visual-state-map "^" 'evil-first-non-blank-of-visual-line)
+(define-key evil-visual-state-map "$" 'evil-end-of-visual-line)
+
 (general-create-definer my-leader-def
                         :states '(normal visual)
                         :keymaps 'override

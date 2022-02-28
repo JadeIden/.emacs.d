@@ -93,12 +93,6 @@
 (straight-use-package 'embark)
 (straight-use-package 'embark-consult)
 
-(when (eq system-type 'gnu/linux)
-  (straight-use-package 'ivy)
-  (straight-use-package 'helm)
-  (load (expand-file-name "~/.emacs.d/launcher.el"))
-  )
-
 (straight-use-package 'perspective)
 (straight-use-package 'hydra)
 
