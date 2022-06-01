@@ -27,12 +27,16 @@
 (setq org-journal-dir (concat org-directory "journal/"))
 (setq org-journal-file-type 'weekly)
 
+(straight-use-package 'org)
 (straight-use-package 'evil)
 (straight-use-package 'evil-plugins)
 (straight-use-package 'evil-collection)
 (straight-use-package 'evil-surround)
 (straight-use-package 'evil-commentary)
 (straight-use-package 'evil-args)
+(straight-use-package 'tree-sitter)
+(straight-use-package 'tree-sitter-langs)
+(straight-use-package 'evil-textobj-tree-sitter)
 (straight-use-package 
  '(evil-repeat-motion :host github
                       :repo "yyoncho/evil-repeat-motion"))
@@ -41,6 +45,7 @@
 (straight-use-package 'f)
 (straight-use-package 'hl-todo)
 (straight-use-package 'web-beautify)
+(straight-use-package 'svg-tag-mode)
 
 (straight-use-package 'general)
 
@@ -82,9 +87,11 @@
 (straight-use-package 'tide)
 
 (straight-use-package 'company)
+(straight-use-package 'company-flx)
 (straight-use-package 'consult-lsp)
 (straight-use-package 'undo-fu)
 (straight-use-package 'help-fns-plus)
+(straight-use-package 'scratch)
 
 (straight-use-package 'selectrum)
 (straight-use-package 'marginalia)
@@ -111,8 +118,6 @@
 (straight-use-package 'org)
 (straight-use-package 'org-journal)
 (straight-use-package 'org-wild-notifier)
-(when my/use-exwm
-  (straight-use-package 'exwm))
 
 (require 'evil)
 
@@ -157,6 +162,8 @@
     ))
   (add-hook 'python-mode-hook #'lsp)
   (setq org-confirm-babel-evaluate nil)
+  (setq python-shell-interpreter "ipython")
+  (setq python-shell-interpreter-args "--simple-prompt -i")
   )
 
 (unless my/use-python
@@ -241,7 +248,7 @@
       auto-save-interval 200            ; number of keystrokes between auto-saves (default: 300)
       )
 
-
+(setq-default tab-always-indent 'complete)
 (selectrum-mode +1)
 (global-git-gutter-mode +1)
 (marginalia-mode +1)
@@ -251,9 +258,9 @@
 (show-paren-mode 1)
 (evil-repeat-motion-mode 1)
 (electric-pair-mode 1)
-(unless (eq system-type 'darwin)
-	(global-tree-sitter-mode 1))
-(menu-bar-mode -1)
+(company-mode +1)
+(company-flx-mode 1)
+(global-tree-sitter-mode 1)
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
 (evil-mode +1)
@@ -339,5 +346,10 @@ apps are not started from a shell."
 
 (setq custom-file "~/.emacs.d/custom.el")
 (load custom-file :noerror)
+
+(setq svg-tag-tags '(
+                     ("TODO" . ((lambda (tag) (svg-tag-make "TODO" :face 'hl-todo :inverse t :margin 0))))
+                     ))
+(global-svg-tag-mode +1)
 
 (put 'narrow-to-region 'disabled nil)

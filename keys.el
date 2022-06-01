@@ -129,6 +129,8 @@
 (general-define-key :states 'normal "*" #'my/consult-line-at-point)
 (general-define-key :states '(normal visual) ";" #'evil-repeat-motion)
 
+(general-define-key :states 'normal :keymaps 'js2-mode-map "C" #'my/smart-change-rest-of-line)
+
 (defun my/goto-definition-in-other-window ()
   (interactive)
   (split-window-right)

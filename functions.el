@@ -111,6 +111,18 @@ https://emacs.stackexchange.com/questions/14673/emacs-function-to-make-a-file-wi
 (defun my/mac-javascript-exec (js &optional tab-descriptor)
   (do-applescript (concat "tell application \"Google Chrome\" to execute " (if tab-descriptor tab-descriptor "front window's active tab") " javascript \"" js "\"")))
 
+(defun my/get-current-line ()
+  "Return the line at point."
+  (buffer-substring-no-properties (line-beginning-position) (line-end-position)))
+
+(defun my/smart-change-rest-of-line ()
+  "Change until the symbol at end of line if it's `,', delete the symbol if cursor is at it, and delete the line otherwise."
+  (interactive)
+  (cond
+   ((looking-at ",$") (replace-match "") (evil-insert-state))
+   ((looking-at ".+\\(,\\)$") (save-excursion (replace-match "\\1") (evil-insert-state)))
+   (t . ((call-interactively #'evil-change-line)))))
+
 (defvar current-dt-format "%a %b %d %H:%M:%S %Z %Y")
 (defun my/current-datetime ()
   "Get current time. THanks to StackOverflow!"
