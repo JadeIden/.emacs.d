@@ -138,6 +138,8 @@
 (general-define-key :states 'normal "*" #'my/consult-line-at-point)
 (general-define-key :states '(normal visual) ";" #'evil-repeat-motion)
 
+(define-key isearch-mode-map (kbd "C-s") 'avy-isearch)
+
 (defun my/goto-definition-in-other-window ()
   (interactive)
   (split-window-right)

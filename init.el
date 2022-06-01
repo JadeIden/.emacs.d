@@ -37,6 +37,8 @@
  '(evil-repeat-motion :host github
                       :repo "yyoncho/evil-repeat-motion"))
 
+(straight-use-package 'avy)
+
 (straight-use-package 's)
 (straight-use-package 'f)
 (straight-use-package 'hl-todo)
