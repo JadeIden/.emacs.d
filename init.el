@@ -41,6 +41,8 @@
  '(evil-repeat-motion :host github
                       :repo "yyoncho/evil-repeat-motion"))
 
+(straight-use-package 'avy)
+
 (straight-use-package 's)
 (straight-use-package 'f)
 (straight-use-package 'hl-todo)
@@ -99,12 +101,6 @@
 (straight-use-package 'consult)
 (straight-use-package 'embark)
 (straight-use-package 'embark-consult)
-
-(when (eq system-type 'gnu/linux)
-  (straight-use-package 'ivy)
-  (straight-use-package 'helm)
-  (load (expand-file-name "~/.emacs.d/launcher.el"))
-  )
 
 (straight-use-package 'perspective)
 (straight-use-package 'hydra)
