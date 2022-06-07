@@ -60,6 +60,7 @@
 
 (straight-use-package 'git-gutter)
 (require 'org-protocol)
+(require 'svg-tag-mode)
 
 (straight-use-package 'yasnippet)
 

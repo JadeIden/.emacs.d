@@ -139,7 +139,7 @@
 (general-define-key :states '(normal visual) ";" #'evil-repeat-motion)
 
 (general-define-key :states 'normal :keymaps 'js2-mode-map "C" #'my/smart-change-rest-of-line)
-(define-key isearch-mode-map (kbd "C-s") 'avy-isearch)
+(define-key isearch-mode-map (kbd "<return>") 'avy-isearch)
 
 (defun my/goto-definition-in-other-window ()
   (interactive)
