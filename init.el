@@ -51,8 +51,12 @@
 
 (straight-use-package 'general)
 
+(straight-use-package 'projectile)
+(straight-use-package 'direnv)
+
 (straight-use-package 'csv-mode)
 (straight-use-package 'go-mode)
+(straight-use-package 'nim-mode)
 (straight-use-package 'slime)
 (straight-use-package 'sly)
 (straight-use-package 'mixed-pitch)
@@ -80,7 +84,10 @@
 (straight-use-package 'projectile)
 (straight-use-package 'flycheck)
 (straight-use-package 'bookmark+)
+(straight-use-package 'eshell-bookmark)
 (require 'bookmark+)
+
+(add-hook 'eshell-mode-hook 'eshell-bookmark-setup)
 
 (unless (eq system-type 'darwin)
 	(straight-use-package 'tree-sitter)
@@ -169,6 +176,8 @@
                                  )
                                ))
 
+(add-hook 'nim-mode-hook #'lsp)
+
 (when my/use-lsp
   (straight-use-package 'lsp-mode)
 
@@ -250,6 +259,7 @@
 (global-git-gutter-mode +1)
 (marginalia-mode +1)
 (projectile-mode +1)
+(direnv-mode +1)
 (key-chord-mode 1)
 (which-key-mode 1)
 (show-paren-mode 1)
@@ -269,7 +279,11 @@
 (yas-global-mode 1)
 (popwin-mode 1)
 (display-battery-mode 1)
+(projectile-mode +1)
 (add-hook 'org-mode-hook #'org-indent-mode)
+(when (eq system-type 'gnu/linux)
+  (menu-bar-mode -1))
+
 
 (add-hook 'after-init-hook #'doom-modeline-mode)
 
@@ -294,6 +308,11 @@
 (setq-default show-trailing-whitespace t)
 (setq-default indent-tabs-mode nil)
 (setq-default tab-width 4)
+
+(setq lsp-clients-clangd-executable "clangd")
+(setq lsp-clients-clangd-args '("--query-driver=/**/bin/xtensa-esp32-elf-*" "--ba"))
+(add-hook 'c-mode 'lsp)
+(add-hook 'lsp-mode 'lsp-enable-which-key-integration)
 
 (add-hook 'eshell-mode-hook (lambda () (setq-local show-trailing-whitespace nil)))
 (add-hook 'comint-mode-hook (lambda () (setq-local show-trailing-whitespace nil)))

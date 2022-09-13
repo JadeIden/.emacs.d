@@ -139,7 +139,10 @@
 (general-define-key :states '(normal visual) ";" #'evil-repeat-motion)
 
 (general-define-key :states 'normal :keymaps 'js2-mode-map "C" #'my/smart-change-rest-of-line)
-(define-key isearch-mode-map (kbd "<return>") 'avy-isearch)
+(define-key isearch-mode-map (kbd "S-<return>") 'avy-isearch)
+(global-unset-key (kbd "C-x C-x"))
+(general-define-key "C-x C-x C-f" #'find-file-other-window)
+(general-define-key "C-x C-x C-c" #'save-buffers-kill-emacs)
 
 (defun my/goto-definition-in-other-window ()
   (interactive)
