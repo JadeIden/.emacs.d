@@ -148,7 +148,8 @@
 (straight-use-package 'olivetti)
 
 (straight-use-package 'doom-themes)
-(load-theme 'doom-tomorrow-night t)
+(straight-use-package 'modus-themes)
+(load-theme 'modus-vivendi t)
 
 (setq org-confirm-babel-evaluate nil)
 
