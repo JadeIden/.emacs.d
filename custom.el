@@ -5,7 +5,9 @@
  ;; If there is more than one, they won't work right.
  '(bmkp-last-as-first-bookmark-file "~/.emacs.d/bookmarks")
  '(electric-pair-mode t)
- '(show-paren-mode t))
+ '(markdown-command "/opt/homebrew/bin/pandoc")
+ '(show-paren-mode t)
+ '(warning-suppress-types '((perspective))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

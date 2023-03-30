@@ -1,17 +1,19 @@
 (general-define-key "ESC" #'evil-force-normal-state)
-(general-define-key :keymaps 'evil-insert-state-map (general-chord "jk") #'evil-force-normal-state)
-(general-define-key :keymaps 'evil-insert-state-map (general-chord "kj") #'evil-force-normal-state)
+(general-define-key :keymaps 'evil-insert-state-map (general-chord "jk") #'my/jaykay)
+(general-define-key :keymaps 'evil-insert-state-map (general-chord "kj") #'my/jaykay)
 (general-define-key :states 'normal
-		    "ESC" #'keyboard-quit)
+		    "ESC" #'my/jaykay)
 
 (define-key evil-inner-text-objects-map "a" 'evil-inner-arg)
 (define-key evil-outer-text-objects-map "a" 'evil-outer-arg)
 
 ;; bind evil-forward/backward-args
-(define-key evil-normal-state-map "L" 'evil-forward-arg)
-(define-key evil-normal-state-map "H" 'evil-backward-arg)
-(define-key evil-motion-state-map "L" 'evil-forward-arg)
-(define-key evil-motion-state-map "H" 'evil-backward-arg)
+(define-key evil-normal-state-map "L" 'evil-forward-symbol)
+(define-key evil-normal-state-map "H" 'evil-backward-symbol)
+(define-key evil-motion-state-map "L" 'evil-forward-symbol)
+(define-key evil-motion-state-map "H" 'evil-backward-symbol)
+
+(define-key evil-normal-state-map "gr" 'lsp-rename)
 
 (define-key evil-normal-state-map "j" 'evil-next-visual-line)
 (define-key evil-normal-state-map "k" 'evil-previous-visual-line)
@@ -51,6 +53,11 @@
   "oa" #'org-agenda
   "oA" #'org-agenda-list
   "of" #'make-frame
+  )
+(my-leader-def
+  "cc" #'evil-mc-make-all-cursors
+  "cn" #'evil-mc-skip-and-goto-next-match
+  "cq" #'evil-mc-undo-all-cursors
   )
 (my-leader-def
   "is" #'yas-insert-snippet
@@ -109,7 +116,8 @@
   "rs" #'tide-rename-symbol
   )
 
-;;(define-key yas-minor-mode-map (kbd "TAB") nil)
+(require 'yasnippet)
+(define-key yas-minor-mode-map (kbd "TAB") nil)
 
 (my-leader-def
   "<XF86Tools>" #'my/flycheck-hydra/body)
@@ -126,6 +134,8 @@
  :keymaps 'lsp-mode-map
  "a" #'lsp-execute-code-action)
 
+(require 'embark)
+
 (general-define-key "C-SPC" #'embark-act)
 
 (general-define-key :keymaps 'embark-symbol-map "r" #'lsp-find-references)
@@ -141,7 +151,7 @@
 (general-define-key :states 'normal :keymaps 'js2-mode-map "C" #'my/smart-change-rest-of-line)
 (define-key isearch-mode-map (kbd "S-<return>") 'avy-isearch)
 (global-unset-key (kbd "C-x C-x"))
-(general-define-key "C-x C-x C-f" #'find-file-other-window)
+(general-define-key "C-x C-x C-f" #'consult-projectile)
 (general-define-key "C-x C-x C-c" #'save-buffers-kill-emacs)
 
 (defun my/goto-definition-in-other-window ()
@@ -174,3 +184,25 @@
   ("u" smerge-keep-upper "Keep Upper")
   ("l" smerge-keep-lower "Keep Lower")
   ("b" smerge-keep-all "Keep Both"))
+
+(defun wrap-region-with (left right)
+  "Wraps region with LEFT and RIGHT."
+  (let ((beg (region-beginning))
+        (end (region-end))
+        (pos (point))
+        (deactivate-mark nil))
+    (save-excursion
+      (goto-char beg)
+      (insert left)
+      (goto-char (+ end (length left)))
+      (insert right))
+    (if (= pos end) (forward-char 1))))
+
+(evil-define-key 'visual evil-mc-key-map
+  "A" #'evil-mc-make-cursor-in-visual-selection-end
+  "I" #'evil-mc-make-cursor-in-visual-selection-beg)
+
+(defun my/jaykay ()
+  (interactive)
+  (evil-force-normal-state)
+  (evil-mc-undo-all-cursors))

@@ -13,6 +13,11 @@
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
 
+(setq ediff-diff-options "")
+(setq ediff-custom-diff-options "-u")
+(setq ediff-window-setup-function 'ediff-setup-windows-plain)
+(setq ediff-split-window-function 'split-window-vertically)
+
 (setq evil-undo-system 'undo-fu)
 (setq evil-want-keybinding nil)
 (setq evil-collection-calendar-want-org-bindings t)
@@ -22,10 +27,8 @@
 
 (setq js-indent-level 4)
 
-(setq org-directory (expand-file-name "~/org/"))
+(setq org-directory (expand-file-name "~/Notes/"))
 (setq org-agenda-diary-file nil)
-(setq org-journal-dir (concat org-directory "journal/"))
-(setq org-journal-file-type 'weekly)
 
 (straight-use-package 'org)
 (straight-use-package 'evil)
@@ -34,6 +37,7 @@
 (straight-use-package 'evil-surround)
 (straight-use-package 'evil-commentary)
 (straight-use-package 'evil-args)
+(straight-use-package 'evil-mc)
 (straight-use-package 'tree-sitter)
 (straight-use-package 'tree-sitter-langs)
 (straight-use-package 'evil-textobj-tree-sitter)
@@ -42,6 +46,12 @@
                       :repo "yyoncho/evil-repeat-motion"))
 
 (straight-use-package 'avy)
+(straight-use-package 'vterm)
+
+(straight-use-package 'protobuf-mode)
+(straight-use-package 'json-mode)
+(straight-use-package 'sqlformat)
+(straight-use-package 'yaml-mode)
 
 (straight-use-package 's)
 (straight-use-package 'f)
@@ -96,14 +106,13 @@
 
 (straight-use-package 'tide)
 
-(straight-use-package 'company)
-(straight-use-package 'company-flx)
+(straight-use-package 'corfu)
 (straight-use-package 'consult-lsp)
 (straight-use-package 'undo-fu)
 (straight-use-package 'help-fns-plus)
 (straight-use-package 'scratch)
 
-(straight-use-package 'selectrum)
+(straight-use-package 'vertico)
 (straight-use-package 'marginalia)
 (straight-use-package 'orderless)
 (straight-use-package 'consult)
@@ -141,8 +150,6 @@
 (load (expand-file-name "~/.emacs.d/functions.el"))
 (load (expand-file-name "~/.emacs.d/keys.el"))
 
-(require 'company)
-(add-hook 'after-init-hook 'global-company-mode)
 (add-hook 'after-init-hook 'global-hl-todo-mode)
 
 (straight-use-package 'olivetti)
@@ -160,11 +167,12 @@
 
 (when my/use-python
   (straight-use-package 'ob-ipython)
-  (org-babel-do-load-languages 'org-babel-load-languages
-                               '((ipython . t)
-                                 (shell . t)
-    ;; other languages..
-    ))
+  ;; (org-babel-do-load-languages 'org-babel-load-languages
+  ;;                              '((ipython . t)
+  ;;                                (shell . t)
+  ;;   ;; other languages..
+  ;;   ))
+  (require 'lsp-pyright)
   (add-hook 'python-mode-hook #'lsp)
   (setq org-confirm-babel-evaluate nil)
   (setq python-shell-interpreter "ipython")
@@ -181,12 +189,14 @@
 
 (when my/use-lsp
   (straight-use-package 'lsp-mode)
+  (setq lsp-completion-enable t)
 
   (defun org-babel-edit-prep:javascript (babel-info)
     (setq-local buffer-file-name (->> babel-info (alist-get :tangle)))
     (lsp))
 
-  (setq lsp-prefer-capf t))
+  ;; (setq lsp-prefer-capf t)
+  )
 
 (defun setup-tide-mode ()
   (interactive)
@@ -194,19 +204,15 @@
   (flycheck-mode +1)
   (eldoc-mode +1)
   (tide-hl-identifier-mode +1)
-  ;; company is an optional dependency. You have to
-  ;; install it separately via package-install
-  ;; `M-x package-install [ret] company`
-  (company-mode +1))
+  )
 
 ;; aligns annotation to the right hand side
-(setq company-tooltip-align-annotations t)
 
 (add-hook 'js2-mode-hook #'setup-tide-mode)
 
-(unless (eq system-type 'darwin)
-    (require 'tree-sitter)
-    (require 'tree-sitter-langs))
+
+(require 'tree-sitter)
+(require 'tree-sitter-langs)
 
 ;; bind evil-args text objects
 (evil-collection-init)
@@ -216,22 +222,6 @@
 
 ;; Persist history over Emacs restarts
 (savehist-mode)
-
-;; Optional performance optimization
-;; by highlighting only the visible candidates.
-(setq orderless-skip-highlighting (lambda () selectrum-is-active))
-(setq selectrum-highlight-candidates-function #'orderless-highlight-matches)
-
-(setq org-agenda-files '("~/org/todo.org" "~/org/todo-archive.org"))
-(setq org-agenda-start-on-weekday 0)
-(setq org-refile-targets '((nil :maxlevel . 9) (org-agenda-files :maxlevel . 9)))
-(setq org-outline-path-complete-in-steps nil)         ; Refile in a single go
-(setq org-refile-use-outline-path t)                  ; Show full paths for refiling
-(setq org-capture-templates '(
-			      ("t" "TODO" entry (file+headline "~/org/todo.org" "Tasks") "* TODO %?\n  %i\n  %a")
-			      ("a" "Appointment" entry (file+headline "~/org/todo.org" "Appointments") "* %? \n%^T")
-                  ("n" "Notes" plain #'my/org-file-by-date "%?")
-                  ))
 
 (setq embark-action-indicator (lambda (map __target)
                                 (which-key--show-keymap "Embark" map nil nil 'no-paging)
@@ -256,7 +246,8 @@
       )
 
 (setq-default tab-always-indent 'complete)
-(selectrum-mode +1)
+(setq corfu-auto t)
+(vertico-mode +1)
 (global-git-gutter-mode +1)
 (marginalia-mode +1)
 (projectile-mode +1)
@@ -265,9 +256,9 @@
 (which-key-mode 1)
 (show-paren-mode 1)
 (evil-repeat-motion-mode 1)
-(electric-pair-mode 1)
-(company-mode +1)
-(company-flx-mode 1)
+(global-evil-mc-mode +1)
+(electric-pair-mode 0)
+(global-corfu-mode +1)
 (global-tree-sitter-mode 1)
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
@@ -281,10 +272,10 @@
 (popwin-mode 1)
 (display-battery-mode 1)
 (projectile-mode +1)
+(toggle-frame-maximized)
 (add-hook 'org-mode-hook #'org-indent-mode)
 (when (eq system-type 'gnu/linux)
   (menu-bar-mode -1))
-
 
 (add-hook 'after-init-hook #'doom-modeline-mode)
 
@@ -345,6 +336,8 @@ apps are not started from a shell."
 
 
 (set-exec-path-from-shell-PATH)
+(setenv "PATH" (concat (getenv "PATH") ":/Users/jeremyiden/go/bin"))
+(add-to-list 'exec-path "/Users/jeremyiden/go/bin")
 
 (when (eq system-type 'darwin)
     (setq indium-chrome-executable "~/.emacs.d/mac-launch-chrome.sh"))
@@ -353,6 +346,8 @@ apps are not started from a shell."
 
 (setq-default evil-surround-pairs-alist
               (push '(?| . ("(" . " || '')")) evil-surround-pairs-alist))
+
+(setq ring-bell-function nil)
 
 (add-hook 'org-mode 'mixed-pitch-mode)
 (add-hook 'org-mode 'org-bullets-mode)
@@ -364,9 +359,76 @@ apps are not started from a shell."
 (setq custom-file "~/.emacs.d/custom.el")
 (load custom-file :noerror)
 
+(when (file-exists-p "~/.emacs.d/init-local.el")
+  (load "~/.emacs.d/init-local.el"))
+
 (setq svg-tag-tags '(
                      ("TODO" . ((lambda (tag) (svg-tag-make "TODO" :face 'hl-todo :inverse t :margin 0))))
                      ))
-(global-svg-tag-mode +1)
+(global-svg-tag-mode 0)
+(setq gofmt-command "goimports")
+(add-hook 'before-save-hook 'gofmt-before-save)
 
 (put 'narrow-to-region 'disabled nil)
+
+(require 'hydra)
+
+(straight-use-package 'smerge-mode
+  :config
+  (defhydra unpackaged/smerge-hydra
+    (:color pink :hint nil :post (smerge-auto-leave))
+    "
+^Move^       ^Keep^               ^Diff^                 ^Other^
+^^-----------^^-------------------^^---------------------^^-------
+_n_ext       _b_ase               _<_: upper/base        _C_ombine
+_p_rev       _u_pper              _=_: upper/lower       _r_esolve
+^^           _l_ower              _>_: base/lower        _k_ill current
+^^           _a_ll                _R_efine
+^^           _RET_: current       _E_diff
+"
+    ("n" smerge-next)
+    ("p" smerge-prev)
+    ("b" smerge-keep-base)
+    ("u" smerge-keep-upper)
+    ("l" smerge-keep-lower)
+    ("a" smerge-keep-all)
+    ("RET" smerge-keep-current)
+    ("\C-m" smerge-keep-current)
+    ("<" smerge-diff-base-upper)
+    ("=" smerge-diff-upper-lower)
+    (">" smerge-diff-base-lower)
+    ("R" smerge-refine)
+    ("E" smerge-ediff)
+    ("C" smerge-combine-with-next)
+    ("r" smerge-resolve)
+    ("k" smerge-kill-current)
+    ("ZZ" (lambda ()
+            (interactive)
+            (save-buffer)
+            (bury-buffer))
+     "Save and bury buffer" :color blue)
+    ("q" nil "cancel" :color blue))
+)
+
+(defun org-mode-<>-syntax-fix (start end)
+  (when (eq major-mode 'org-mode)
+    (save-excursion
+      (goto-char start)
+      (while (re-search-forward "<\\|>" end t)
+    (when (get-text-property (point) 'src-block)
+      ;; This is a < or > in an org-src block
+      (put-text-property (point) (1- (point))
+                 'syntax-table (string-to-syntax "_")))))))
+
+(add-hook 'org-mode-hook
+      (lambda ()
+        (setq syntax-propertize-function 'org-mode-<>-syntax-fix)
+        (syntax-propertize (point-max))))
+
+(add-hook 'minibuffer-setup-hook (lambda ()
+                                   (when (memq #'completion-at-point
+                                               (flatten-tree
+                                                (current-local-map)))
+                                     (corfu-mode))))
+
+(general-add-advice 'unpackaged/smerge-hydra/body :after 'magit-diff-visit-file)

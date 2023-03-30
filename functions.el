@@ -63,53 +63,13 @@ modify it."
   (magit-get-current-branch)
 )
 
-(defun my/wrike--extract-wrike-number ()
-  (car (cdr (s-match "WRIKE-\\([[:digit:]]+\\)-\\(.+\\)" (magit-get-current-branch)))))
-
-(defun my/wrike--extract-client-name ()
-  (car (last (s-split "-" (magit-get-current-branch)))))
-
-(defun my/wrike-init-commit ()
-  (interactive)
-  (insert (concat
-   "WRIKE-"
-   (my/wrike--extract-wrike-number)
-   "\n - "
-   (my/wrike--extract-client-name)
-   "\n - https://www.wrike.com/open.htm?id="
-   (my/wrike--extract-wrike-number))
-))
-
 (defun my/org-file-by-date ()
   "Create an Org file with current time as name. Credit
 https://emacs.stackexchange.com/questions/14673/emacs-function-to-make-a-file-with-date-time-as-filename-and-a-shortcut-for-it"
   (find-file (format-time-string "~/org/notes-%Y-%m-%d--%H-%M-%S.org")))
 
-(defhydra my/flycheck-hydra ()
-    "
-    ^Clock^             ^Do^
-    ^─────^─────────────^──^─────────
-    _q_ quit            _p_ previous error
-    ^^                  _n_ next error
-    ^^                  _l_ list errors
-    ^^                  _f_ fix error (if LSP)
-    "
-    ("q" nil)
-    ("p" #'flycheck-previous-error)
-    ("n" #'flycheck-next-error)
-    ("l" #'flycheck-list-errors)
-    ("f" #'lsp-execute-code-action)
-    )
-
-(defun my/sample (lst)
-  "Return a random element of LST"
-  (nth (random (length lst)) lst))
-
 (defun parse-csv-to-array (contents)
   (parse-csv-string-rows contents ?\, ?\" "\n"))
-
-(defun my/mac-javascript-exec (js &optional tab-descriptor)
-  (do-applescript (concat "tell application \"Google Chrome\" to execute " (if tab-descriptor tab-descriptor "front window's active tab") " javascript \"" js "\"")))
 
 (defun my/get-current-line ()
   "Return the line at point."
@@ -125,7 +85,7 @@ https://emacs.stackexchange.com/questions/14673/emacs-function-to-make-a-file-wi
 
 (defvar current-dt-format "%a %b %d %H:%M:%S %Z %Y")
 (defun my/current-datetime ()
-  "Get current time. THanks to StackOverflow!"
+  "Get current time. Thanks to StackOverflow!"
   (format-time-string current-dt-format (current-time)))
 
 (defun my/yank-updated-buffer ()

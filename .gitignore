@@ -16,3 +16,6 @@ projectile-bookmarks.eld
 tramp
 bookmarks
 forge-database.sqlite
+/init-local.el
+/projects
+/org-persist/
