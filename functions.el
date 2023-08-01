@@ -101,3 +101,34 @@ https://emacs.stackexchange.com/questions/14673/emacs-function-to-make-a-file-wi
   "Yanks the buffer to the clipboard."
   (interactive)
   (kill-new (buffer-string)))
+
+;; TODO port forwarding isn't implemented. add to upstream? kludge locally? idk
+(defun my/kubernetes-dwim ()
+  "Does something based on Kubernetes thing at point."
+  (interactive)
+  (let* (
+         (description (get-text-property (point) 'kubernetes-nav))
+         (typ (car description))
+         (depl-completions '(
+                             ("View Logs" :logs)
+                             ("Port Forward" :port-forward))))
+    (case typ
+      (:deployment-name (case (cadr (assoc (completing-read "Action? " depl-completions) depl-completions))
+                          (:logs (call-interactively #'kubernetes-logs-fetch-all))
+                          (:port-forward (message "asdf"))
+                          (otherwise (message "fdsa"))))
+      (:namespace-name (call-interactively #'kubernetes-set-namespace))
+      )))
+
+(defun my/json-line-peek ()
+  "Copy the given line to a new buffer, then json pretty print it."
+  (interactive)
+  (let ((buf (generate-new-buffer "json-peek"))
+        (beg (line-beginning-position))
+        (end (line-end-position)))
+    (kill-ring-save beg end)
+    (split-window-horizontally)
+    (other-window 1)
+    (switch-to-buffer buf)
+    (yank)
+    (json-pretty-print-buffer)))

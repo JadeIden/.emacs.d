@@ -48,6 +48,8 @@
 (straight-use-package 'avy)
 (straight-use-package 'vterm)
 
+(straight-use-package 'perspective)
+
 (straight-use-package 'protobuf-mode)
 (straight-use-package 'json-mode)
 (straight-use-package 'sqlformat)
@@ -140,7 +142,7 @@
 (define-key evil-normal-state-map (kbd "e") 'evil-forward-little-word-end)
 (define-key evil-operator-state-map (kbd "w") 'evil-forward-little-word-begin)
 (define-key evil-operator-state-map (kbd "b") 'evil-backward-little-word-begin)
-(define-key evil-operator-state-map (kbd "e") 'evil-backward-little-word-end)
+(define-key evil-operator-state-map (kbd "e") 'evil-forward-little-word-end)
 (define-key evil-visual-state-map (kbd "w") 'evil-forward-little-word-begin)
 (define-key evil-visual-state-map (kbd "b") 'evil-backward-little-word-begin)
 (define-key evil-visual-state-map (kbd "e") 'evil-forward-little-word-end)
@@ -157,6 +159,9 @@
 (straight-use-package 'doom-themes)
 (straight-use-package 'modus-themes)
 (load-theme 'modus-vivendi t)
+
+(straight-use-package 'kubernetes)
+(straight-use-package 'kubernetes-evil)
 
 (setq org-confirm-babel-evaluate nil)
 
@@ -222,6 +227,7 @@
 
 ;; Persist history over Emacs restarts
 (savehist-mode)
+(winner-mode +1)
 
 (setq embark-action-indicator (lambda (map __target)
                                 (which-key--show-keymap "Embark" map nil nil 'no-paging)
@@ -432,3 +438,24 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
                                      (corfu-mode))))
 
 (general-add-advice 'unpackaged/smerge-hydra/body :after 'magit-diff-visit-file)
+
+(setq org-src-preserve-indentation t)
+(setq org-src-tab-acts-natively t)
+
+(defun on-after-init ()
+  (unless (display-graphic-p (selected-frame))
+    (set-face-background 'default "unspecified-bg" (selected-frame))))
+
+(add-hook 'window-setup-hook 'on-after-init)
+
+(defun on-frame-open (&optional frame)
+  "If the FRAME created in terminal don't load background color."
+  (unless (display-graphic-p frame)
+    (set-face-background 'default "unspecified-bg" frame)))
+
+(add-hook 'after-make-frame-functions 'on-frame-open)
+
+(defun my/run-staticcheck ()
+  "If the magit directory is a Go project, run staticcheck ./... and fail if necessary."
+  (with-temp-buffer
+      (call-process "staticcheck" nil (current-buffer) nil "./...")))

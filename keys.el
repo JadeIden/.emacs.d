@@ -67,6 +67,9 @@
   "br" #'revert-buffer
   )
 (my-leader-def
+  "kk" #'kubernetes-overview
+  "kl" #'my/json-line-peek)
+(my-leader-def
   "ha" #'consult-apropos
   "hf" #'describe-function
   "hk" #'describe-key
@@ -75,6 +78,11 @@
   "gg" #'magit
   "gb" #'magit-blame
   "gi" #'magit-init
+  )
+(my-leader-def
+  "pp" #'persp-switch
+  "ph" #'persp-prev
+  "pl" #'persp-next
   )
 (my-leader-def
   "sd" #'consult-ripgrep
@@ -146,7 +154,10 @@
 (general-define-key "C-SPC" 'embark-act)
 (general-define-key :states 'normal "gD" #'my/goto-definition-in-other-window)
 (general-define-key :states 'normal "*" #'my/consult-line-at-point)
+(general-define-key :states 'insert "C-x C-l" #'evil-complete-next-line)
 (general-define-key :states '(normal visual) ";" #'evil-repeat-motion)
+
+(general-define-key :states 'normal :keymaps 'kubernetes-mode-map "<return>" #'my/kubernetes-dwim)
 
 (general-define-key :states 'normal :keymaps 'js2-mode-map "C" #'my/smart-change-rest-of-line)
 (define-key isearch-mode-map (kbd "S-<return>") 'avy-isearch)
